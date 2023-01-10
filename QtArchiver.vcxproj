@@ -86,19 +86,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <QtRcc Include="QtArchiver.qrc" />
-    <QtUic Include="EmptyFileDialog.ui" />
     <QtUic Include="QtArchiver.ui" />
     <QtMoc Include="QtArchiver.h" />
     <ClCompile Include="Compression.cpp" />
-    <ClCompile Include="EmptyFileDialog.cpp" />
     <ClCompile Include="List.cpp" />
     <ClCompile Include="QtArchiver.cpp" />
     <ClCompile Include="main.cpp" />
     <None Include="QtArchiver.ico" />
     <ResourceCompile Include="QtArchiver.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="EmptyFileDialog.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Compression.h" />

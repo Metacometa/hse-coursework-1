@@ -1,7 +1,7 @@
 #include "QtArchiver.h"
-#include "emptyfiledialog.h"
 
 #include <QFileDialog.h>
+#include <QMessageBox.h>
 
 
 QtArchiver::QtArchiver(QWidget* parent)
@@ -45,11 +45,8 @@ void QtArchiver::on_clearPathButton_clicked() {
 
 void QtArchiver::on_compressButton_clicked() {
     if (path == "<No file chosen>") {
-        EmptyFileDialog dialog;
-        dialog.exec();
+        QMessageBox::warning(this, "Warning", "No file chosen");
     }
-    else if (path == "")
-        path = "<No file chosen";
     else {
         compression.Huffman(path.toStdString(), 1);
         on_clearPathButton_clicked();
@@ -58,11 +55,8 @@ void QtArchiver::on_compressButton_clicked() {
 
 void QtArchiver::on_decompressButton_clicked() {
     if (path == "<No file chosen>") {
-        EmptyFileDialog dialog;
-        dialog.exec();
+        QMessageBox::warning(this, "Warning", "No file chosen");
     }
-    else if (path == "")
-        path = "<No file chosen";
     else {
         compression.Huffman(path.toStdString(), 2);
     }
