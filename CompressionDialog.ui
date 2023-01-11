@@ -1,48 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QtArchiverClass</class>
- <widget class="QWidget" name="QtArchiverClass">
+ <class>CompressionDialogClass</class>
+ <widget class="QDialog" name="CompressionDialogClass">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>420</width>
-    <height>174</height>
+    <width>355</width>
+    <height>153</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Archiver</string>
+   <string>CompressionDialog</string>
   </property>
-  <widget class="QWidget" name="layoutWidget">
+  <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>401</width>
-     <height>151</height>
+     <x>20</x>
+     <y>20</y>
+     <width>321</width>
+     <height>121</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <layout class="QVBoxLayout" name="verticalLayout">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QLabel" name="fileLabel">
+         <widget class="QLabel" name="algorithmLabel">
           <property name="text">
-           <string>File:</string>
+           <string>Compression</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="filePathLabel">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer">
+         <spacer name="horizontalSpacer_2">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -54,19 +47,8 @@
           </property>
          </spacer>
         </item>
-        <item>
-         <widget class="QPushButton" name="clearPathButton">
-          <property name="text">
-           <string>Clear</string>
-          </property>
-         </widget>
-        </item>
        </layout>
       </item>
-     </layout>
-    </item>
-    <item row="1" column="0">
-     <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
        <spacer name="verticalSpacer_2">
         <property name="orientation">
@@ -75,13 +57,24 @@
         <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
-          <height>13</height>
+          <height>40</height>
          </size>
         </property>
        </spacer>
       </item>
+     </layout>
+    </item>
+    <item row="1" column="0">
+     <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QLabel" name="fileLabel">
+          <property name="text">
+           <string>File</string>
+          </property>
+         </widget>
+        </item>
         <item>
          <spacer name="horizontalSpacer_3">
           <property name="orientation">
@@ -95,20 +88,6 @@
           </property>
          </spacer>
         </item>
-        <item>
-         <widget class="QComboBox" name="compressionAlgorithms">
-          <item>
-           <property name="text">
-            <string>Huffman</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>None</string>
-           </property>
-          </item>
-         </widget>
-        </item>
        </layout>
       </item>
       <item>
@@ -119,7 +98,7 @@
         <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
-          <height>13</height>
+          <height>40</height>
          </size>
         </property>
        </spacer>
@@ -127,16 +106,33 @@
      </layout>
     </item>
     <item row="2" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QPushButton" name="openFileButton">
-        <property name="text">
-         <string>Open</string>
+       <widget class="QProgressBar" name="progressBar">
+        <property name="value">
+         <number>24</number>
         </property>
        </widget>
       </item>
       <item>
-       <spacer name="horizontalSpacer_2">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item row="3" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -149,16 +145,9 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="compressButton">
+       <widget class="QPushButton" name="startButton">
         <property name="text">
-         <string>Compress</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="decompressButton">
-        <property name="text">
-         <string>Decompress</string>
+         <string>Start</string>
         </property>
        </widget>
       </item>
@@ -168,8 +157,6 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="QtArchiver.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

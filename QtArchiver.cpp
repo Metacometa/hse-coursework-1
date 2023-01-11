@@ -1,12 +1,11 @@
 #include "QtArchiver.h"
+#include "CompressionDialog.h"
 
 #include <QFileDialog.h>
 #include <QMessageBox.h>
 
-
 QtArchiver::QtArchiver(QWidget* parent)
     : QWidget(parent) {
-    //ts.setEncoding(bUtf8 ? QStringConverter::Utf8 : QStringConverter::Latin1);
     ui.setupUi(this);
     path = "<No file chosen>";
     ui.filePathLabel->setText(this->path);
@@ -35,7 +34,6 @@ void QtArchiver::on_openFileButton_clicked() {
         this->path = temp;
         ui.filePathLabel->setText(this->path);
     }
-        
 }
 
 void QtArchiver::on_clearPathButton_clicked() {
@@ -48,7 +46,8 @@ void QtArchiver::on_compressButton_clicked() {
         QMessageBox::warning(this, "Warning", "No file chosen");
     }
     else {
-        compression.Huffman(path.toStdString(), 1);
+        CompressionDialog dialog(1, this->path, ui.compressionAlgorithms->currentText());
+        dialog.exec();
         on_clearPathButton_clicked();
     }
 }
@@ -58,6 +57,9 @@ void QtArchiver::on_decompressButton_clicked() {
         QMessageBox::warning(this, "Warning", "No file chosen");
     }
     else {
-        compression.Huffman(path.toStdString(), 2);
+        CompressionDialog dialog(0, this->path, ui.compressionAlgorithms->currentText());
+        dialog.exec();
+
+        on_clearPathButton_clicked();
     }
 }

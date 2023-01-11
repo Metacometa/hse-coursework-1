@@ -2,7 +2,7 @@
 #include "Compression.h"
 
 
-int Compression::Huffman(std::string s_filepath, int mode) {
+int Compression::Huffman(QProgressBar* pbar, std::string s_filepath, int mode) {
 	//file name getting
 	std::string temp = "";
 	int index = s_filepath.length();
@@ -79,11 +79,14 @@ int Compression::Huffman(std::string s_filepath, int mode) {
 		BIT2CHAR buf;
 		buf.symb = 0;
 		int currbit = 0;
+
+		int pval = 0; //DELETE THIS LATER
 		for (int i = 0; i < length; ++i)
 		{
 			int currsymb = (unsigned int)fgetc(fr);
 			int pointer = 0;
 			while (table[currsymb][pointer] != 0) {
+				pbar->setValue(pval++);
 				if (currbit == 8) {
 					fputc(buf.symb, coded);
 					buf.symb = 0;

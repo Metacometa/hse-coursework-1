@@ -5,7 +5,9 @@
 #include <stdlib.h>
 #include "List.h"
 
+#include <QProgressBar>
+
 class Compression {
 public:
-	int Huffman(std::string filename, int mode);
+	int Huffman(QProgressBar *pbar, std::string filename, int mode);
 };

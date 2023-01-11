@@ -2,7 +2,6 @@
 
 #include <QtWidgets/QWidget>
 #include "ui_QtArchiver.h"
-#include "Compression.h"
 
 class QtArchiver : public QWidget
 {
@@ -15,7 +14,7 @@ public:
 private:
     Ui::QtArchiverClass ui;
     QString path;
-    Compression compression;
+
 private slots:
     void on_openFileButton_clicked();
     void on_clearPathButton_clicked();

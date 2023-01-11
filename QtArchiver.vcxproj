@@ -86,9 +86,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <QtRcc Include="QtArchiver.qrc" />
+    <QtUic Include="CompressionDialog.ui" />
     <QtUic Include="QtArchiver.ui" />
     <QtMoc Include="QtArchiver.h" />
     <ClCompile Include="Compression.cpp" />
+    <ClCompile Include="CompressionDialog.cpp" />
     <ClCompile Include="List.cpp" />
     <ClCompile Include="QtArchiver.cpp" />
     <ClCompile Include="main.cpp" />
@@ -97,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Compression.h" />
+    <QtMoc Include="CompressionDialog.h" />
     <ClInclude Include="List.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -52,6 +52,9 @@
     <ClCompile Include="Compression.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CompressionDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="List.h">
@@ -60,5 +63,15 @@
     <ClInclude Include="Compression.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="CompressionDialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="CompressionDialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
   </ItemGroup>
 </Project>
