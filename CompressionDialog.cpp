@@ -19,14 +19,14 @@ void CompressionDialog::compress() {
 	if (this->algorithm == "Huffman") {
 		compression.Huffman(ui.progressBar, path.toStdString(), 1);
 	}
-	//this->close();
+	this->close();
 }
 
 void CompressionDialog::decompress() {
 	if (this->algorithm == "Huffman") {
-		//compression.Huffman(path.toStdString(), 2);
+		compression.Huffman(ui.progressBar, path.toStdString(), 2);
 	}
-	//this->close();
+	this->close();
 }
 
 void CompressionDialog::updateBar() {
