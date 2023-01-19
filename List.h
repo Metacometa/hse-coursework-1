@@ -1,12 +1,7 @@
 #pragma once
-#define _CRT_SECURE_NO_WARNINGS
 #define SIZE 256
-#define CODE_SIZE 1000
-#include <stdlib.h>
-#include <stdio.h>
 #include <string>
-#include <string.h>
-
+#include <array>
 typedef union bit2char {
 	char symb;
 	struct bit {
@@ -20,7 +15,6 @@ typedef union bit2char {
 		unsigned b8 : 1;
 	}mbit;
 }BIT2CHAR;
-
 typedef struct cell {
 	unsigned char symb;
 	unsigned char isSymb;
@@ -35,8 +29,6 @@ typedef struct Node {
 
 void Add2List(NODE** pphead, CELL temp);
 NODE* DeleteList(NODE* phead);
-void PrintList(const NODE* phead);
 NODE* MakeTreeFromList(NODE* head);
 CELL* MakeNodeFromNode(CELL* left, CELL* right);
-void Simmetric(const CELL* root, int pos, char code[], char table[][CODE_SIZE]);
-void Check(int* deshpoint, char* deshiph, FILE* decoded, char table[][CODE_SIZE]);
+void Simmetric(const CELL* root, int pos, char code[], char table[][SIZE]);

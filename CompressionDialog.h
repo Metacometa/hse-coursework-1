@@ -11,7 +11,7 @@ class CompressionDialog : public QDialog
 	Q_OBJECT
 
 public:
-	CompressionDialog(bool mode, QString inputPath, QString compressionAlgorithm, QWidget *parent = nullptr);
+	CompressionDialog(bool mode, QString inputPath, QString outputPath, QString compressionAlgorithm, QWidget *parent = nullptr);
 	~CompressionDialog();
 
 	//Archiver functions
@@ -19,9 +19,10 @@ public:
 	void decompress();
 private:
 	Ui::CompressionDialogClass ui;
-	Compression compression;
+	Huffman huffman;
 	QString algorithm;
 	QString path;
+	QString pathWhere;
 	bool mode;
 	bool isCompressing = false;
 	int MAX_VALUE = 100;

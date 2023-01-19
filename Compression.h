@@ -1,13 +1,12 @@
 #pragma once
 
 #define _CRT_SECURE_NO_WARNINGS
-#include <stdio.h>
-#include <stdlib.h>
-#include "List.h"
 
 #include <QProgressBar>
 
-class Compression {
+class Huffman {
 public:
-	int Huffman(QProgressBar *pbar, std::string filename, int mode);
+	int huffman(QProgressBar *pbar, std::string filename, int mode);
+	void Compression(QProgressBar* pbar, std::string filename, std::string outputname);
+	void Decompression(QProgressBar* pbar, std::string filename, std::string outputname);
 };

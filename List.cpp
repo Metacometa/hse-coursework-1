@@ -1,5 +1,4 @@
-#include "List.h"
-
+#include "list.h"
 void Add2List(NODE** pphead, CELL temp)
 {
 	while (*pphead)
@@ -8,7 +7,7 @@ void Add2List(NODE** pphead, CELL temp)
 			break;
 		pphead = &((*pphead)->next);
 	}
-	NODE* pnew = (NODE*)malloc(sizeof(NODE));
+	NODE* pnew = new NODE;
 	pnew->content = temp;
 	pnew->next = *pphead;
 	*pphead = pnew;
@@ -19,19 +18,9 @@ NODE* DeleteList(NODE* phead)
 	if (phead)
 	{
 		DeleteList(phead->next);
-		free(phead);
+		delete phead;
 	}
-	return NULL;
-}
-
-void PrintList(const NODE* phead)
-{
-	while (phead)
-	{
-		printf("%5d", (phead->content).freq);
-		phead = phead->next;
-	}
-	printf("\n");
+	return nullptr;
 }
 
 NODE* MakeTreeFromList(NODE* head)
@@ -48,7 +37,7 @@ NODE* MakeTreeFromList(NODE* head)
 
 CELL* MakeNodeFromNode(CELL* left, CELL* right)
 {
-	CELL* res = (CELL*)malloc(sizeof(CELL));
+	CELL* res = new CELL;
 	res->freq = left->freq + right->freq;
 	res->isSymb = 0;
 	res->symb = 0;
@@ -56,7 +45,8 @@ CELL* MakeNodeFromNode(CELL* left, CELL* right)
 	res->right = right;
 	return res;
 }
-void Simmetric(const CELL* root, int pos, char code[], char table[][CODE_SIZE])
+
+void Simmetric(const CELL* root, int pos, char code[], char table[][SIZE])
 {
 	if (root->left)
 	{
@@ -70,19 +60,13 @@ void Simmetric(const CELL* root, int pos, char code[], char table[][CODE_SIZE])
 		code[pos] = 0;
 	}
 	if (root->isSymb) {
-		strcpy(table[root->symb], code);
-	}
-}
-
-void Check(int* deshpoint, char* deshiph, FILE* decoded, char table[][CODE_SIZE]) {
-	for (int i = 0; i < SIZE; i++) {
-		if (strcmp(deshiph, table[i]) == 0) {
-			fputc(i, decoded);
-			for (int g = 0; g < *deshpoint; g++) {
-				deshiph[g] = 0;
+		if (pos == 0) {
+			table[root->symb][0] = '0';
+		}
+		else {
+			for (size_t i = 0; i <= pos; i++) {
+				table[root->symb][i] = code[i];
 			}
-			*deshpoint = 0;
-			break;
 		}
 	}
 }

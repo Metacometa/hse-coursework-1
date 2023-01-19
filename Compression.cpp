@@ -1,184 +1,218 @@
 #pragma once
 #include "Compression.h"
 
-
-int Compression::Huffman(QProgressBar* pbar, std::string s_filepath, int mode) {
-	//file name getting
-	std::string temp = "";
-	int index = s_filepath.length();
-	for (int i = s_filepath.length() - 1; i >= 0; --i) {
-		if (s_filepath[i] != '\\')
-			temp = s_filepath[i] + temp;
-		else
-			break;
+#include <iostream>
+#include <fstream>
+#include "List.h"
+void Huffman::Compression(QProgressBar* pbar, std::string filename, std::string outputname) {
+	size_t namestart = filename.length();
+	while (filename[namestart] != '\\') {
+		namestart--;
 	}
-	std::string::size_type n = s_filepath.find(temp);
-	if (n != std::string::npos)
-		s_filepath.erase(s_filepath.begin() + n, s_filepath.end());
 
-	char filename[CODE_SIZE] = { 0 };
-	char newfilename[CODE_SIZE] = "Coded";
-	char decodedfilename[CODE_SIZE] = "Decoded";
-	for (int i = 0; i < temp.length(); ++i)
-		filename[i] = temp[i];
-
-	//path name getting
-	char pathname[CODE_SIZE] = { 0 };
-	char newpathname[CODE_SIZE] = { 0 };
-	char decodedpathname[CODE_SIZE] = { 0 };
-	for (int i = 0; i < s_filepath.length(); ++i)
-		decodedpathname[i] = newpathname[i] = pathname[i] = s_filepath[i];
-
-	strcat(newfilename, filename);
-	strcat(newpathname, newfilename);
-	strcpy(newfilename, newpathname);
-
-	strcat(decodedfilename, filename);
-	strcat(decodedpathname, decodedfilename);
-	strcpy(decodedfilename, decodedpathname);
-
-	strcat(pathname, filename);
-	strcpy(filename, pathname);
-
-	if (mode == 1) {
-		char tempname[CODE_SIZE] = { 0 };
-		FILE* fr = fopen(filename, "rb");
-		int freq[SIZE] = { 0 };
-		if (!fr)
-			return 0;
-		fseek(fr, 0L, SEEK_END);
-		long length = ftell(fr);
-		fseek(fr, 0, SEEK_SET);
-		for (int i = 0; i < length; ++i)
-		{
-			freq[(unsigned char)fgetc(fr)] ++;
-		}
-		fseek(fr, 0, SEEK_SET);
-		NODE* Prior = NULL;
-		for (int i = 0; i < SIZE; i++) {
-			if (freq[i] != 0) {
-				CELL Temp = { (unsigned char)i,(unsigned char)'1',(unsigned int)freq[i],NULL,NULL };
-				Add2List(&Prior, Temp);
-			}
-		}
-		char code[CODE_SIZE] = { 0 };
-		char table[SIZE][CODE_SIZE] = { 0 };
-		Prior = MakeTreeFromList(Prior);
-		Simmetric(&(Prior->content), 0, code, table);
-		FILE* coded = fopen(newfilename, "wb");
-		if (!coded)
-			return 0;
-		fputc(' ', coded);
-		fputc('*', coded);
-		for (int i = 0; i < SIZE; i++) {
-			for (int j = 0; j < 4; j++) {
-				fputc(freq[i] >> (8 * j), coded);
-			}
-			fputc('*', coded);
-		}
-		BIT2CHAR buf;
-		buf.symb = 0;
-		int currbit = 0;
-
-		int pval = 0; //DELETE THIS LATER
-		for (int i = 0; i < length; ++i)
-		{
-			int currsymb = (unsigned int)fgetc(fr);
-			int pointer = 0;
-			while (table[currsymb][pointer] != 0) {
-				pbar->setValue(pval++);
-				if (currbit == 8) {
-					fputc(buf.symb, coded);
-					buf.symb = 0;
-					currbit = 0;
-				}
-				if (table[currsymb][pointer] == '0') {
-					buf.symb &= ~((char)(1 << (currbit)));
-				}
-				else {
-					buf.symb ^= ((char)(1 << (currbit)));
-				}
-				pointer++;
-				currbit++;
-			}
-		}
-		fputc(buf.symb, coded);
-		if (currbit % 8 == 0) {
-			currbit = 0;
-		}
-		fseek(coded, 0, SEEK_SET);
-		fputc(currbit, coded);
-		fclose(fr);
-		fclose(coded);
+	std::string newname = filename.substr(namestart, filename.length());
+	size_t it = newname.length();
+	while (newname[it] != '.') {
+		it--;
 	}
-	else if (mode == 2) {
-		FILE* coded = fopen(filename, "rb");
-		int bit = fgetc(coded);
-		fgetc(coded);
-		int freq[SIZE] = { 0 };
-		for (int i = 0; i < SIZE; i++) {
-			for (int j = 0; j < 4; j++) {
-				int temp = fgetc(coded);
-				freq[i] ^= (temp << (8 * j));
-			}
-			fgetc(coded);
-		}
-		NODE* Prior = NULL;
-		for (int i = 0; i < SIZE; i++) {
-			if (freq[i] != 0) {
-				CELL Temp = { (unsigned char)i,(unsigned char)'1',(unsigned int)freq[i],NULL,NULL };
-				Add2List(&Prior, Temp);
-			}
-		}
-		char code[CODE_SIZE] = { 0 };
-		char table[SIZE][CODE_SIZE] = { 0 };
-		Prior = MakeTreeFromList(Prior);
-		Simmetric(&(Prior->content), 0, code, table);
 
-		BIT2CHAR buf;
-		BIT2CHAR bufnext;
-		FILE* decoded = fopen(decodedfilename, "wb");
-		buf.symb = fgetc(coded);
-		CELL* temp = &(Prior->content);
-		int currbit = 0;
-		while (1) {
-			bufnext.symb = fgetc(coded);
-			if (feof(coded)) {
-				for (int i = 0; i < bit; i++) {
-					if (buf.mbit.b1 == 0) {
+	std::ifstream fr;
+	fr.open(filename, std::ios_base::in | std::ios_base::binary);
+
+	fr.seekg(0, std::ios_base::end);
+	std::streamoff length = fr.tellg();
+	fr.seekg(0, std::ios_base::beg);
+
+	//set maximum for PROGRESS BAR
+	pbar->setMaximum(100);
+
+	int freq[SIZE] = { 0 };
+	for (std::streamoff i = 0; i < length; ++i)
+	{
+		freq[(unsigned char)fr.get()] ++;
+	}
+	fr.seekg(0, std::ios_base::beg);
+
+	NODE* Prior = nullptr;
+	for (int i = 0; i < SIZE; i++) {
+		if (freq[i] != 0) {
+			CELL Temp = { (unsigned char)i,(unsigned char)'1',(unsigned int)freq[i],nullptr,nullptr };
+			Add2List(&Prior, Temp);
+		}
+	}
+
+	char code[SIZE] = { 0 };
+	char table[SIZE][SIZE] = { 0 };
+	Prior = MakeTreeFromList(Prior);
+	Simmetric(&(Prior->content), 0, code, table);
+
+	std::ofstream coded;
+	coded.open(outputname + newname.substr(0, it) + ".archy", std::ios_base::out | std::ios_base::binary);
+
+	coded.put(' ');
+	coded.put('*');
+	size_t filelength = newname.length();
+	for (size_t i = it; i < filelength; i++) {
+		coded.put(newname[i]);
+	}
+	coded.put('*');
+	for (int i = 0; i < SIZE; i++) {
+		for (int j = 0; j < 4; j++) {
+			coded.put(freq[i] >> (8 * j));
+		}
+		coded.put('*');
+	}
+
+	BIT2CHAR buf;
+	buf.symb = 0;
+	int currbit = 0;
+	for (std::streamoff i = 0; i < length; ++i) {
+		int currsymb = (unsigned int)fr.get();
+		int pointer = 0;
+
+		//Сюда добавь что-то, отображающее прогресс архивации (i/length)*100%
+		pbar->setValue(i * 100 / length) ;
+		//std::streamoff = long long;
+		//std::streamoff i;
+		//std::streamoff length;
+
+		while (table[currsymb][pointer] != 0) {
+			if (currbit == 8) {
+				coded.put(buf.symb);
+				buf.symb = 0;
+				currbit = 0;
+			}
+			if (table[currsymb][pointer] == '0') {
+				buf.symb &= ~((char)(1 << (currbit)));
+			}
+			else {
+				buf.symb ^= ((char)(1 << (currbit)));
+			}
+			pointer++;
+			currbit++;
+		}
+	}
+
+	coded.put(buf.symb);
+	if (currbit % 8 == 0) {
+		currbit = 0;
+	}
+
+	coded.seekp(0, std::ios_base::beg);
+	coded.put(currbit);
+
+	fr.close();
+	coded.close();
+}
+
+void Huffman::Decompression(QProgressBar* pbar, std::string filename, std::string outputname) {
+	size_t filelength = filename.length();
+	size_t namestart = filelength;
+	while (filename[namestart] != '\\') {
+		namestart--;
+	}
+
+	std::string currext = ".archy";
+	size_t extlength = currext.length();
+
+	std::ifstream coded;
+	coded.open(filename, std::ios_base::in | std::ios_base::binary);
+
+	coded.seekg(0, std::ios_base::end);
+	std::streamoff length = coded.tellg();
+	coded.seekg(0, std::ios_base::beg);
+
+	//set maximum for PROGRESS BAR
+	pbar->setMaximum(100);
+
+	int bit = coded.get();
+	coded.get();
+
+	std::string ext;
+	char taken = coded.get();
+	while (taken != '*') {
+		ext.push_back(taken);
+		taken = coded.get();
+	}
+
+	int freq[SIZE] = { 0 };
+	for (int i = 0; i < SIZE; i++) {
+		for (int j = 0; j < 4; j++) {
+			int temp = coded.get();
+			freq[i] ^= (temp << (8 * j));
+		}
+		coded.get();
+	}
+
+	NODE* Prior = nullptr;
+	for (int i = 0; i < SIZE; i++) {
+		if (freq[i] != 0) {
+			CELL Temp = { (unsigned char)i,(unsigned char)'1',(unsigned int)freq[i],nullptr,nullptr };
+			Add2List(&Prior, Temp);
+		}
+	}
+
+	char code[SIZE] = { 0 };
+	char table[SIZE][SIZE] = { 0 };
+	Prior = MakeTreeFromList(Prior);
+	Simmetric(&(Prior->content), 0, code, table);
+
+	std::ofstream decoded;
+	decoded.open(outputname + filename.substr(namestart, filelength - extlength - namestart) + ext, std::ios_base::out | std::ios_base::binary);
+
+	BIT2CHAR buf;
+	BIT2CHAR bufnext;
+	buf.symb = coded.get();
+	CELL* temp = &(Prior->content);
+	while (1) {
+		bufnext.symb = coded.get();
+
+		//Сюда добавь что-то, отображающее прогресс декодирования (coded.tellg()/length)*100%
+		pbar->setValue(coded.tellg() * 100 / length);
+		//std::streamoff = long long;
+		//std::streamoff coded.tellg();
+		//std::streamoff length;
+
+		if (coded.eof()) {
+			for (int i = 0; i < bit; i++) {
+				if (buf.mbit.b1 == 0) {
+					if (temp->left) {
 						temp = temp->left;
 					}
-					else {
-						temp = temp->right;
-					}
-					if (temp->isSymb == '1') {
-						fputc(temp->symb, decoded);
-						temp = &(Prior->content);
-					}
-					buf.symb = buf.symb >> 1;
-				}
-				break;
-			}
-			for (int i = 0; i < 8; i++) {
-				if (buf.mbit.b1 == 0) {
-					temp = temp->left;
 				}
 				else {
-					temp = temp->right;
+					if (temp->right) {
+						temp = temp->right;
+					}
 				}
 				if (temp->isSymb == '1') {
-					fputc(temp->symb, decoded);
+					decoded.put(temp->symb);
 					temp = &(Prior->content);
 				}
 				buf.symb = buf.symb >> 1;
 			}
-			buf = bufnext;
+			break;
 		}
-		fclose(decoded);
-		fclose(coded);
+		for (int i = 0; i < 8; i++) {
+			if (buf.mbit.b1 == 0) {
+				if (temp->left) {
+					temp = temp->left;
+				}
+			}
+			else {
+				if (temp->right) {
+					temp = temp->right;
+				}
+			}
+			if (temp->isSymb == '1') {
+				decoded.put(temp->symb);
+				temp = &(Prior->content);
+			}
+			buf.symb = buf.symb >> 1;
+		}
+		buf = bufnext;
 	}
-	else {
-		printf("%s", "Error!");
-	}
-	return 0;
+
+	coded.close();
+	decoded.close();
 }

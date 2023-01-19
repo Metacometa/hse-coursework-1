@@ -1,7 +1,8 @@
 #include "CompressionDialog.h"
+#include <QMessageBox>
 
-CompressionDialog::CompressionDialog(bool mode, QString inputPath, QString chosenAlgorithm, QWidget* parent)
-	: path(inputPath), algorithm(chosenAlgorithm), QDialog(parent) {
+CompressionDialog::CompressionDialog(bool mode, QString inputPath, QString outputPath, QString chosenAlgorithm, QWidget* parent)
+	: path(inputPath), pathWhere(outputPath), algorithm(chosenAlgorithm), QDialog(parent) {
 	ui.setupUi(this);
 
 	progress = 0;
@@ -17,15 +18,19 @@ CompressionDialog::~CompressionDialog() {}
 //Archiver functions
 void CompressionDialog::compress() {
 	if (this->algorithm == "Huffman") {
-		compression.Huffman(ui.progressBar, path.toStdString(), 1);
+		//compression.Huffman(ui.progressBar, path.toStdString(), 1);
+		huffman.Compression(ui.progressBar, path.toStdString(), pathWhere.toStdString());
 	}
+	QMessageBox::information(this, "Done", "File is succesfully compressed!");
 	this->close();
 }
 
 void CompressionDialog::decompress() {
 	if (this->algorithm == "Huffman") {
-		compression.Huffman(ui.progressBar, path.toStdString(), 2);
+		//compression.Huffman(ui.progressBar, path.toStdString(), 2);
+		huffman.Decompression(ui.progressBar, path.toStdString(), pathWhere.toStdString());
 	}
+	QMessageBox::information(this, "Done", "File is succesfully compressed!");
 	this->close();
 }
 
@@ -37,14 +42,9 @@ void CompressionDialog::updateBar() {
 }
 
 void CompressionDialog::on_startButton_clicked() {
-	if (!isCompressing) {
-		if (mode)
-			compress();
-		else
-			decompress();
-		isCompressing = !isCompressing;
-	}
+	if (mode)
+		compress();
 	else
-		updateBar();
+		decompress();
 }
 
