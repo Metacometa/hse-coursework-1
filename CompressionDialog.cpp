@@ -29,6 +29,7 @@ CompressionDialog::~CompressionDialog() {}
 void CompressionDialog::compress() {
 	if (this->algorithm == "Huffman") {
 		huffman.Compression(ui.progressBar, inputPath.toStdString(), outputPath.toStdString());
+		ui.progressBar->setValue(100);
 		QMessageBox::information(this, "Done", "File is succesfully compressed!");
 	}
 
@@ -38,6 +39,7 @@ void CompressionDialog::compress() {
 void CompressionDialog::decompress() {
 	if (this->algorithm == "Huffman") {
 		huffman.Decompression(ui.progressBar, inputPath.toStdString(), outputPath.toStdString());
+		ui.progressBar->setValue(100);
 		QMessageBox::information(this, "Done", "File is succesfully decompressed!");
 	}
 
