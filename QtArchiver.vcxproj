@@ -100,6 +100,7 @@
   <ItemGroup>
     <ClInclude Include="Compression.h" />
     <QtMoc Include="CompressionDialog.h" />
+    <ClInclude Include="Config.h" />
     <ClInclude Include="List.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

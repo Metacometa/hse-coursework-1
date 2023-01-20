@@ -6,29 +6,30 @@
 
 #include "Compression.h"
 
-class CompressionDialog : public QDialog
-{
+class CompressionDialog : public QDialog {
 	Q_OBJECT
 
 public:
-	CompressionDialog(bool mode, QString inputPath, QString outputPath, QString compressionAlgorithm, QWidget *parent = nullptr);
+	//Constructor / Destructor
+	CompressionDialog(bool mode, QString inputPath, QString outputPath, QString inputAlgorithm, 
+		QWidget *parent = nullptr);
 	~CompressionDialog();
 
 	//Archiver functions
 	void compress();
 	void decompress();
 private:
+	//Resources
 	Ui::CompressionDialogClass ui;
 	Huffman huffman;
-	QString algorithm;
-	QString path;
-	QString pathWhere;
-	bool mode;
-	bool isCompressing = false;
-	int MAX_VALUE = 100;
-	int progress;
 
-	void updateBar();
+	//Variables
+	QString algorithm;
+	QString inputPath;
+	QString outputPath;
+
+	bool mode;
+
 private slots:
 	void on_startButton_clicked();
 };

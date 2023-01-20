@@ -1,4 +1,4 @@
-#include "list.h"
+#include "List.h"
 void Add2List(NODE** pphead, CELL temp)
 {
 	while (*pphead)

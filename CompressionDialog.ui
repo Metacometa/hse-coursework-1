@@ -6,20 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>355</width>
-    <height>153</height>
+    <width>360</width>
+    <height>171</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>CompressionDialog</string>
+   <string>Archivation</string>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>20</x>
      <y>20</y>
      <width>321</width>
-     <height>121</height>
+     <height>138</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
@@ -28,7 +28,7 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QLabel" name="algorithmLabel">
+         <widget class="QLabel" name="processLabel">
           <property name="text">
            <string>Compression</string>
           </property>

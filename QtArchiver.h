@@ -2,19 +2,21 @@
 
 #include <QtWidgets/QWidget>
 #include "ui_QtArchiver.h"
+#include "CompressionDialog.h"
 
 class QtArchiver : public QWidget
 {
     Q_OBJECT
 
 public:
+    //Constructors / Destructors
     QtArchiver(QWidget* parent = nullptr);
     ~QtArchiver();
 
 private:
     Ui::QtArchiverClass ui;
-    QString path;
-    QString pathWhere;
+    QString inputPath;
+    QString outputPath;
 
 private slots:
     void on_openFileButton_clicked();

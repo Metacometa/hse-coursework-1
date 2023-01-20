@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <fstream>
-#include "List.h"
+
 void Huffman::Compression(QProgressBar* pbar, std::string filename, std::string outputname) {
 	size_t namestart = filename.length();
 	while (filename[namestart] != '\\') {
@@ -22,9 +22,6 @@ void Huffman::Compression(QProgressBar* pbar, std::string filename, std::string 
 	fr.seekg(0, std::ios_base::end);
 	std::streamoff length = fr.tellg();
 	fr.seekg(0, std::ios_base::beg);
-
-	//set maximum for PROGRESS BAR
-	pbar->setMaximum(100);
 
 	int freq[SIZE] = { 0 };
 	for (std::streamoff i = 0; i < length; ++i)
@@ -47,7 +44,7 @@ void Huffman::Compression(QProgressBar* pbar, std::string filename, std::string 
 	Simmetric(&(Prior->content), 0, code, table);
 
 	std::ofstream coded;
-	coded.open(outputname + newname.substr(0, it) + ".archy", std::ios_base::out | std::ios_base::binary);
+	coded.open(outputname + newname.substr(0, it) + extension, std::ios_base::out | std::ios_base::binary);
 
 	coded.put(' ');
 	coded.put('*');
@@ -112,7 +109,7 @@ void Huffman::Decompression(QProgressBar* pbar, std::string filename, std::strin
 		namestart--;
 	}
 
-	std::string currext = ".archy";
+	std::string currext = extension;
 	size_t extlength = currext.length();
 
 	std::ifstream coded;
