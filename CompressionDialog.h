@@ -3,6 +3,7 @@
 #include <QDialog>
 #include "ui_CompressionDialog.h"
 #include <string>
+#include <QTimer>
 
 #include "Compression.h"
 

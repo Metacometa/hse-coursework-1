@@ -17,7 +17,6 @@ CompressionDialog::CompressionDialog(bool mode, QString inputPath, QString outpu
 	this->algorithm = inputAlgorithm;
 	this->mode = mode;
 
-
 	ui.progressBar->setMinimum(0);
 	ui.progressBar->setValue(0);
 	ui.progressBar->setMaximum(100);
@@ -28,7 +27,7 @@ CompressionDialog::~CompressionDialog() {}
 //Archiver functions
 void CompressionDialog::compress() {
 	if (this->algorithm == "Huffman") {
-		huffman.Compression(ui.progressBar, inputPath.toStdString(), outputPath.toStdString());
+		huffman.Compression(ui.progressBar, ui.timerLabel, inputPath.toStdString(), outputPath.toStdString());
 		ui.progressBar->setValue(100);
 		QMessageBox::information(this, "Done", "File is succesfully compressed!");
 	}
@@ -38,7 +37,7 @@ void CompressionDialog::compress() {
 
 void CompressionDialog::decompress() {
 	if (this->algorithm == "Huffman") {
-		huffman.Decompression(ui.progressBar, inputPath.toStdString(), outputPath.toStdString());
+		huffman.Decompression(ui.progressBar, ui.timerLabel, inputPath.toStdString(), outputPath.toStdString());
 		ui.progressBar->setValue(100);
 		QMessageBox::information(this, "Done", "File is succesfully decompressed!");
 	}

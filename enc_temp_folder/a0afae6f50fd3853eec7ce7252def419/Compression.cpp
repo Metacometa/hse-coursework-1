@@ -107,7 +107,7 @@ void Huffman::Compression(QProgressBar* pbar, QLabel* label, std::string filenam
 			pointer++;
 			currbit++;
 		}
-		printTime(label, start);
+		//printTime(label, start);
 	}
 
 	coded.put(buf.symb);
