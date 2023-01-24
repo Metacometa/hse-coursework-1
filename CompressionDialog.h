@@ -31,11 +31,14 @@ private:
 	//Variables
 	QString inputPath;
 	QString outputPath;
+	QTimer* timer;
+	short time;
 
 	MODES mode;
 	ALGORITHMS algorithm;
 
 private slots:
 	void on_startButton_clicked();
+	void timer_timeOut_event_slot();
 	void closeWindow();
 };
