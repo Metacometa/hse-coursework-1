@@ -30,18 +30,14 @@ void QtArchiver::on_openFileButton_clicked() {
         QString temp = "";
 
         for (int i = 0; i < stdpath.length(); ++i) {
-            if (stdpath[i] == '/')
-                temp += "\\";
-            else
-                temp += stdpath[i];
+            if (stdpath[i] == '/') temp += "\\";
+            else temp += stdpath[i];
         }
 
         this->inputPath = temp;
 
         ui.filePathLabel->setText(this->inputPath);
     }
-
-
 }
 
 void QtArchiver::on_whereButton_clicked() {
@@ -56,10 +52,8 @@ void QtArchiver::on_whereButton_clicked() {
         QString temp = "";
 
         for (int i = 0; i < stdpath.length(); ++i) {
-            if (stdpath[i] == '/')
-                temp += "\\";
-            else
-                temp += stdpath[i];
+            if (stdpath[i] == '/') temp += "\\";
+            else temp += stdpath[i];
         }
 
         this->outputPath = temp;
@@ -83,29 +77,21 @@ void QtArchiver::on_copyPathFromToButton_clicked() {
 }
 
 void QtArchiver::on_compressButton_clicked() {
-    if (inputPath == emptyPath and outputPath == emptyPath)
-        QMessageBox::warning(this, "Warning", "No file and directory chosen");
-    else if (inputPath == emptyPath)
-        QMessageBox::warning(this, "Warning", "No file chosen");
-    else if (outputPath == emptyPath)
-        QMessageBox::warning(this, "Warning", "No directory chosen");
-    else {
+    if (inputPath == emptyPath and outputPath == emptyPath) QMessageBox::warning(this, "Warning", "No file and directory chosen");
+    else if (inputPath == emptyPath) QMessageBox::warning(this, "Warning", "No file chosen");
+    else if (outputPath == emptyPath) QMessageBox::warning(this, "Warning", "No directory chosen");
+    else {//If paths chosen successfully 
+        QString inputExtension = "";
+        for (int i = inputPath.size() - 1; i >= 0 and inputPath[i] != '.'; --i) inputExtension = inputPath[i] + inputExtension;
+        inputExtension = "." + inputExtension;
 
-        QString temp = "";
-
-        for (int i = inputPath.size() - 1; i >= 0 and inputPath[i] != '.'; --i)
-            temp = inputPath[i] + temp;
-        temp = "." + temp;
-
-        if (temp.toStdString() != extension) {
+        if (inputExtension.toStdString() != outputExtension) {
             CompressionDialog dialog(1, this->inputPath, this->outputPath, ui.compressionAlgorithms->currentText());
             dialog.exec();
             on_clearPathButton_clicked();
             on_clear2PathButton_clicked();
         }
-        else
-            QMessageBox::warning(this, "Warning", QString::fromStdString("Can't compress '" + extension + "' files"));
-
+        else QMessageBox::warning(this, "Warning", QString::fromStdString("Can't compress '" + outputExtension + "' files"));
     }
 }
 

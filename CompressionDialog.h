@@ -19,6 +19,7 @@ public:
 	//Archiver functions
 	void compress();
 	void decompress();
+
 private:
 	//Resources
 	Ui::CompressionDialogClass ui;

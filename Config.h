@@ -1,4 +1,4 @@
 #pragma once
 #include <string>
 
-const std::string extension = ".archy";
+const std::string outputExtension = ".archy";

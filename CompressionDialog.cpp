@@ -3,14 +3,11 @@
 
 //Constructors / Destructors
 CompressionDialog::CompressionDialog(bool mode, QString inputPath, QString outputPath, 
-	QString inputAlgorithm, QWidget* parent)
-	: QDialog(parent) {
+	QString inputAlgorithm, QWidget* parent) : QDialog(parent) {
 	ui.setupUi(this);
 
-	if (mode)
-		ui.processLabel->setText("Compression");
-	else
-		ui.processLabel->setText("Decompression");
+	if (mode) ui.processLabel->setText("Compression");
+	else ui.processLabel->setText("Decompression");
 
 	this->inputPath = inputPath;
 	this->outputPath = outputPath;

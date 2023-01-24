@@ -58,7 +58,7 @@ void Huffman::Compression(QProgressBar* pbar, QLabel* label, std::string filenam
 	Simmetric(&(Prior->content), 0, code, table);
 
 	std::ofstream coded;
-	coded.open(outputname + newname.substr(0, it) + extension, std::ios_base::out | std::ios_base::binary);
+	coded.open(outputname + newname.substr(0, it) + outputExtension, std::ios_base::out | std::ios_base::binary);
 
 	coded.put(' ');
 	coded.put('*');
@@ -87,9 +87,6 @@ void Huffman::Compression(QProgressBar* pbar, QLabel* label, std::string filenam
 
 		//Сюда добавь что-то, отображающее прогресс архивации (i/length)*100%
 		pbar->setValue(i * 100 / length);
-		//std::streamoff = long long; 
-		//std::streamoff i;
-		//std::streamoff length;
 
 		while (table[currsymb][pointer] != 0) {
 			//printTime(label, start);
@@ -129,7 +126,7 @@ void Huffman::Decompression(QProgressBar* pbar, QLabel* label,	std::string filen
 		namestart--;
 	}
 
-	std::string currext = extension;
+	std::string currext = outputExtension;
 	size_t extlength = currext.length();
 
 	std::ifstream coded;
