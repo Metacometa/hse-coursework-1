@@ -80,7 +80,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -98,7 +98,7 @@
     <ResourceCompile Include="QtArchiver.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Compression.h" />
+    <QtMoc Include="Compression.h" />
     <QtMoc Include="CompressionDialog.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="List.h" />

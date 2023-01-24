@@ -5,24 +5,26 @@
 #include <iostream>
 #include <fstream>
 
-void printTime(QLabel* label, const std::chrono::steady_clock::time_point& start) {
-	auto end = std::chrono::steady_clock::now();
-	int duration = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
-	label->setText(QString::fromStdString(std::to_string(duration / 3600) + ":" + std::to_string(duration / 60) + ":" + std::to_string(duration % 60)));
+
+//Constructors / Destructors
+Compressor::Compressor(std::string filename, std::string outputname) 
+{
+	this->filename = filename;
+	this->outputname = outputname;
 }
 
-void Huffman::Compression(QProgressBar* pbar, QLabel* label, std::string filename, std::string outputname) {
-	label->setText("1");
+void Compressor::huffmanCompression() 
+{
 	size_t namestart = filename.length();
-	while (filename[namestart] != '\\') {
+	while (filename[namestart] != '\\') 
+	{
 		namestart--;
 	}
-	//chrono
-	auto start = std::chrono::steady_clock::now();
 
 	std::string newname = filename.substr(namestart, filename.length());
 	size_t it = newname.length();
-	while (newname[it] != '.') {
+	while (newname[it] != '.') 
+	{
 		it--;
 	}
 
@@ -35,18 +37,17 @@ void Huffman::Compression(QProgressBar* pbar, QLabel* label, std::string filenam
 
 	int freq[SIZE] = { 0 };
 
-	label->setText("2");
 	for (std::streamoff i = 0; i < length; ++i)
 	{
-
 		freq[(unsigned char)fr.get()] ++;
 	}
 	fr.seekg(0, std::ios_base::beg);
 
 	NODE* Prior = nullptr;
-	label->setText("3");
-	for (int i = 0; i < SIZE; i++) {
-		if (freq[i] != 0) {
+	for (int i = 0; i < SIZE; i++) 
+	{
+		if (freq[i] != 0) 
+		{
 			CELL Temp = { (unsigned char)i,(unsigned char)'1',(unsigned int)freq[i],nullptr,nullptr };
 			Add2List(&Prior, Temp);
 		}
@@ -64,51 +65,55 @@ void Huffman::Compression(QProgressBar* pbar, QLabel* label, std::string filenam
 	coded.put('*');
 	size_t filelength = newname.length();
 
-	label->setText("4");
-	for (size_t i = it; i < filelength; i++) {
+	for (size_t i = it; i < filelength; i++) 
+	{
 		coded.put(newname[i]);
 	}
 	coded.put('*');
-	for (int i = 0; i < SIZE; i++) {
-		for (int j = 0; j < 4; j++) {
+	for (int i = 0; i < SIZE; i++) 
+	{
+		for (int j = 0; j < 4; j++) 
+		{
 			coded.put(freq[i] >> (8 * j));
 		}
 		coded.put('*');
 	}
 
-
-
 	BIT2CHAR buf;
 	buf.symb = 0;
 	int currbit = 0;
-	for (std::streamoff i = 0; i < length; ++i) {
+	for (std::streamoff i = 0; i < length; ++i) 
+	{
 		int currsymb = (unsigned int)fr.get();
 		int pointer = 0;
 
-		//Сюда добавь что-то, отображающее прогресс архивации (i/length)*100%
-		pbar->setValue(i * 100 / length);
+		//updating QtProgressBar
+		emit updateProgressBar(i * 100 / length);
 
-		while (table[currsymb][pointer] != 0) {
-			//printTime(label, start);
-			if (currbit == 8) {
+		while (table[currsymb][pointer] != 0) 
+		{
+			if (currbit == 8) 
+			{
 				coded.put(buf.symb);
 				buf.symb = 0;
 				currbit = 0;
 			}
-			if (table[currsymb][pointer] == '0') {
+			if (table[currsymb][pointer] == '0') 
+			{
 				buf.symb &= ~((char)(1 << (currbit)));
 			}
-			else {
+			else 
+			{
 				buf.symb ^= ((char)(1 << (currbit)));
 			}
 			pointer++;
 			currbit++;
 		}
-		printTime(label, start);
 	}
 
 	coded.put(buf.symb);
-	if (currbit % 8 == 0) {
+	if (currbit % 8 == 0) 
+	{
 		currbit = 0;
 	}
 
@@ -117,12 +122,19 @@ void Huffman::Compression(QProgressBar* pbar, QLabel* label, std::string filenam
 
 	fr.close();
 	coded.close();
+
+	//updating QtProgressBar and closing programm
+	emit updateProgressBar(100);
+	emit finished();
 }
 
-void Huffman::Decompression(QProgressBar* pbar, QLabel* label,	std::string filename, std::string outputname) {
+
+void Compressor::huffmanDecompression() 
+{
 	size_t filelength = filename.length();
 	size_t namestart = filelength;
-	while (filename[namestart] != '\\') {
+	while (filename[namestart] != '\\') 
+	{
 		namestart--;
 	}
 
@@ -136,22 +148,22 @@ void Huffman::Decompression(QProgressBar* pbar, QLabel* label,	std::string filen
 	std::streamoff length = coded.tellg();
 	coded.seekg(0, std::ios_base::beg);
 
-	//set maximum for PROGRESS BAR
-	pbar->setMaximum(100);
-
 	int bit = coded.get();
 	coded.get();
 
 	std::string ext;
 	char taken = coded.get();
-	while (taken != '*') {
+	while (taken != '*') 
+	{
 		ext.push_back(taken);
 		taken = coded.get();
 	}
 
 	int freq[SIZE] = { 0 };
-	for (int i = 0; i < SIZE; i++) {
-		for (int j = 0; j < 4; j++) {
+	for (int i = 0; i < SIZE; i++) 
+	{
+		for (int j = 0; j < 4; j++) 
+		{
 			int temp = coded.get();
 			freq[i] ^= (temp << (8 * j));
 		}
@@ -159,8 +171,10 @@ void Huffman::Decompression(QProgressBar* pbar, QLabel* label,	std::string filen
 	}
 
 	NODE* Prior = nullptr;
-	for (int i = 0; i < SIZE; i++) {
-		if (freq[i] != 0) {
+	for (int i = 0; i < SIZE; i++) 
+	{
+		if (freq[i] != 0) 
+		{
 			CELL Temp = { (unsigned char)i,(unsigned char)'1',(unsigned int)freq[i],nullptr,nullptr };
 			Add2List(&Prior, Temp);
 		}
@@ -181,11 +195,8 @@ void Huffman::Decompression(QProgressBar* pbar, QLabel* label,	std::string filen
 	while (1) {
 		bufnext.symb = coded.get();
 
-		//Сюда добавь что-то, отображающее прогресс декодирования (coded.tellg()/length)*100%
-		pbar->setValue(coded.tellg() * 100 / length);
-		//std::streamoff = long long;
-		//std::streamoff coded.tellg();
-		//std::streamoff length;
+		//updating QtProgressBar
+		emit updateProgressBar(coded.tellg() * 100 / length);
 
 		if (coded.eof()) {
 			for (int i = 0; i < bit; i++) {
@@ -229,4 +240,10 @@ void Huffman::Decompression(QProgressBar* pbar, QLabel* label,	std::string filen
 
 	coded.close();
 	decoded.close();
+
+	//updating QtProgressBar
+	emit updateProgressBar(100);
+	emit finished();
 }
+
+

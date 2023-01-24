@@ -4,6 +4,7 @@
 
 #include <QFileDialog.h>
 #include <QMessageBox.h>
+#include "CompressionDialog.h"
 
 QString emptyPath = "<No file chosen>";
 
@@ -76,36 +77,70 @@ void QtArchiver::on_copyPathFromToButton_clicked() {
     ui.filePathToLabel->setText(this->outputPath);
 }
 
-void QtArchiver::on_compressButton_clicked() {
-    if (inputPath == emptyPath and outputPath == emptyPath) QMessageBox::warning(this, "Warning", "No file and directory chosen");
-    else if (inputPath == emptyPath) QMessageBox::warning(this, "Warning", "No file chosen");
-    else if (outputPath == emptyPath) QMessageBox::warning(this, "Warning", "No directory chosen");
-    else {//If paths chosen successfully 
+void QtArchiver::on_compressButton_clicked() 
+{
+    ALGORITHMS mode;
+    if (ui.compressionAlgorithms->currentText() == "Huffman")
+    {
+        mode = HUFFMAN;
+    }
+
+    if (inputPath == emptyPath and outputPath == emptyPath)
+    {
+        QMessageBox::warning(this, "Warning", "No file and directory chosen");
+    }
+    else if (inputPath == emptyPath)
+    {
+        QMessageBox::warning(this, "Warning", "No file chosen");
+    }
+    else if (outputPath == emptyPath)
+    {
+        QMessageBox::warning(this, "Warning", "No directory chosen");
+    }
+    else //If paths chosen successfully 
+    {
         QString inputExtension = "";
         for (int i = inputPath.size() - 1; i >= 0 and inputPath[i] != '.'; --i) inputExtension = inputPath[i] + inputExtension;
         inputExtension = "." + inputExtension;
 
-        if (inputExtension.toStdString() != outputExtension) {
-            CompressionDialog dialog(1, this->inputPath, this->outputPath, ui.compressionAlgorithms->currentText());
+        if (inputExtension.toStdString() != outputExtension) 
+        {
+            CompressionDialog dialog(COMPRESS, this->inputPath, this->outputPath, mode);
             dialog.exec();
             on_clearPathButton_clicked();
             on_clear2PathButton_clicked();
         }
-        else QMessageBox::warning(this, "Warning", QString::fromStdString("Can't compress '" + outputExtension + "' files"));
+        else
+        {
+            QMessageBox::warning(this, "Warning", QString::fromStdString("Can't compress '" + outputExtension + "' files"));
+        }
     }
 }
 
-void QtArchiver::on_decompressButton_clicked() {
-    if (inputPath == emptyPath and outputPath == emptyPath)
-        QMessageBox::warning(this, "Warning", "No file and directory chosen");
-    else if (inputPath == emptyPath)
-        QMessageBox::warning(this, "Warning", "No file chosen");
-    else if (outputPath == emptyPath)
-        QMessageBox::warning(this, "Warning", "No directory chosen");
-    else {
-        CompressionDialog dialog(0, this->inputPath, this->outputPath, ui.compressionAlgorithms->currentText());
-        dialog.exec();
+void QtArchiver::on_decompressButton_clicked() 
+{
+    ALGORITHMS mode;
+    if (ui.compressionAlgorithms->currentText() == "Huffman")
+    {
+        mode = HUFFMAN;
+    }
 
+    if (inputPath == emptyPath and outputPath == emptyPath)
+    {
+        QMessageBox::warning(this, "Warning", "No file and directory chosen");
+    }
+    else if (inputPath == emptyPath)
+    {
+        QMessageBox::warning(this, "Warning", "No file chosen");
+    }
+    else if (outputPath == emptyPath)
+    {
+        QMessageBox::warning(this, "Warning", "No directory chosen");
+    }
+    else
+    {
+        CompressionDialog dialog(DECOMPRESS, this->inputPath, this->outputPath, mode);
+        dialog.exec();
         on_clearPathButton_clicked();
         on_clear2PathButton_clicked();
     }

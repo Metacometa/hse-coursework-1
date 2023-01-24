@@ -2,7 +2,6 @@
 
 #include <QtWidgets/QWidget>
 #include "ui_QtArchiver.h"
-#include "CompressionDialog.h"
 
 class QtArchiver : public QWidget
 {
