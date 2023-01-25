@@ -1,16 +1,25 @@
 #pragma once
 
-#define _CRT_SECURE_NO_WARNINGS
-
-#include <QProgressBar>
+#include <QObject>
 
 #include "List.h"
 #include "Config.h"
 
-class Huffman {
-public:
+class Compressor : public QObject 
+{
+	Q_OBJECT
 
-	int huffman(QProgressBar *pbar, std::string filename, int mode);
-	void Compression(QProgressBar* pbar, std::string filename, std::string outputname);
-	void Decompression(QProgressBar* pbar, std::string filename, std::string outputname);
+public:
+	std::string filename;
+	std::string outputname;
+	Compressor(std::string filename, std::string outputname);
+
+
+
+signals:
+	void updateProgressBar(int value);
+	void finished();
+private slots:
+	void huffmanCompression();
+	void huffmanDecompression();
 };

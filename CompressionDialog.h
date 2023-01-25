@@ -3,33 +3,42 @@
 #include <QDialog>
 #include "ui_CompressionDialog.h"
 #include <string>
+#include <QString>
+#include <QTimer>
 
 #include "Compression.h"
 
-class CompressionDialog : public QDialog {
+enum MODES { COMPRESS, DECOMPRESS };
+enum ALGORITHMS { HUFFMAN };
+
+class CompressionDialog : public QDialog 
+{
 	Q_OBJECT
 
 public:
+
 	//Constructor / Destructor
-	CompressionDialog(bool mode, QString inputPath, QString outputPath, QString inputAlgorithm, 
+	CompressionDialog(MODES mode, QString inputPath, QString outputPath, ALGORITHMS inputAlgorithm, 
 		QWidget *parent = nullptr);
 	~CompressionDialog();
 
-	//Archiver functions
-	void compress();
-	void decompress();
+
 private:
 	//Resources
 	Ui::CompressionDialogClass ui;
-	Huffman huffman;
+	Compressor *compressor;
 
 	//Variables
-	QString algorithm;
 	QString inputPath;
 	QString outputPath;
+	QTimer* timer;
+	short time;
 
-	bool mode;
+	MODES mode;
+	ALGORITHMS algorithm;
 
 private slots:
 	void on_startButton_clicked();
+	void timer_timeOut_event_slot();
+	void closeWindow();
 };
