@@ -455,3 +455,4 @@ FodyWeavers.xsd
 //My ignores
 tests/
 enc_temp_folder/
+Releases/
