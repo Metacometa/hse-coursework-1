@@ -77,11 +77,6 @@ void QtArchiver::on_clear2PathButton_clicked() {
     ui.filePathToLabel->setText(this->outputPath);
 }
 
-void QtArchiver::on_copyPathFromToButton_clicked() {
-    outputPath = inputPath;
-    ui.filePathToLabel->setText(this->outputPath);
-}
-
 void QtArchiver::on_compressButton_clicked() {
     if (inputPath == emptyPath and outputPath == emptyPath)
         QMessageBox::warning(this, "Warning", "No file and directory chosen");
