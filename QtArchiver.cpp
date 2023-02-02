@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include "QtArchiver.h"
@@ -77,17 +78,17 @@ bool QtArchiver::isFileAndPathCorrect()
     */
     if (this->inputFile == emptyFile and this->outputPath == emptyPath)
     {
-        QMessageBox::warning(this, warningTitle, warningMessageNoFileAndPath);
+        QMessageBox::warning(this, warningTitle, messageNoFileAndPath);
         return false;
     }
     else if (this->inputFile == emptyFile)
     {
-        QMessageBox::warning(this, warningTitle, warningMessageNoFile);
+        QMessageBox::warning(this, warningTitle, messageNoFile);
         return false;
     }
     else if (this->outputPath == emptyPath)
     {
-        QMessageBox::warning(this, warningTitle, warningMessageNoPath);
+        QMessageBox::warning(this, warningTitle, messageNoPath);
         return false;
     }
     else 

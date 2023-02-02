@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <QString>
 
 const std::wstring huffmanExtension = L".huffman";
 

@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/QtArchiver">
-        <file>QtArchiver.png</file>
         <file>ArchiverIcon.ico</file>
     </qresource>
 </RCC>

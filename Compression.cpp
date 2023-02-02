@@ -5,7 +5,6 @@
 #include <iostream>
 #include <fstream>
 
-
 //Constructors / Destructors
 Compressor::Compressor(std::wstring filename, std::wstring outputname) 
 {
