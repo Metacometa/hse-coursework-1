@@ -1,4 +1,4 @@
 #pragma once
 #include <string>
 
-const std::string huffmanExtension = ".huffman";
+const std::wstring huffmanExtension = L".huffman";

@@ -7,7 +7,7 @@
 
 
 //Constructors / Destructors
-Compressor::Compressor(std::string filename, std::string outputname) 
+Compressor::Compressor(std::wstring filename, std::wstring outputname) 
 {
 	this->filename = filename;
 	this->outputname = outputname;
@@ -21,7 +21,7 @@ void Compressor::huffmanCompression()
 		namestart--;
 	}
 
-	std::string newname = filename.substr(namestart, filename.length());
+	std::wstring newname = filename.substr(namestart, filename.length());
 	size_t it = newname.length();
 	while (newname[it] != '.') 
 	{
@@ -29,6 +29,7 @@ void Compressor::huffmanCompression()
 	}
 
 	std::ifstream fr;
+
 	fr.open(filename, std::ios_base::in | std::ios_base::binary);
 
 	fr.seekg(0, std::ios_base::end);
@@ -137,7 +138,7 @@ void Compressor::huffmanDecompression()
 		namestart--;
 	}
 
-	std::string currext = huffmanExtension;
+	std::wstring currext = huffmanExtension;
 	size_t extlength = currext.length();
 
 	std::ifstream coded;
@@ -150,7 +151,7 @@ void Compressor::huffmanDecompression()
 	int bit = coded.get();
 	coded.get();
 
-	std::string ext;
+	std::wstring ext;
 	char taken = coded.get();
 	while (taken != '*') 
 	{

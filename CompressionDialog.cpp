@@ -45,7 +45,7 @@ CompressionDialog::~CompressionDialog() {}
 void CompressionDialog::on_startButton_clicked() 
 {
 	QThread* compressorThread = new QThread();
-	this->compressor = new Compressor(this->inputPath.toStdString(), this->outputPath.toStdString());
+	this->compressor = new Compressor(this->inputPath.toStdWString(), this->outputPath.toStdWString());
 	this->compressor->moveToThread(compressorThread);
 
 	connect(this->timer, SIGNAL(timeout()), this, SLOT(timer_timeOut_event_slot()));

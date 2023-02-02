@@ -27,7 +27,7 @@ void QtArchiver::on_editFileButton_clicked() {
 
     if (!selectedFiles.isEmpty()) {
         inputPath = selectedFiles.at(0);
-        std::u16string stdpath = inputPath.toStdU16String();
+        std::wstring stdpath = inputPath.toStdWString();
         QString temp = "";
 
         for (int i = 0; i < stdpath.length(); ++i) {
@@ -94,7 +94,7 @@ void QtArchiver::on_compressButton_clicked()
         for (int i = inputPath.size() - 1; i >= 0 and inputPath[i] != '.'; --i) inputExtension = inputPath[i] + inputExtension;
         inputExtension = "." + inputExtension;
 
-        if (inputExtension.toStdString() != huffmanExtension) 
+        if (inputExtension.toStdWString() != huffmanExtension) 
         {
             CompressionDialog dialog(COMPRESS, this->inputPath, this->outputPath, mode);
             dialog.exec();
@@ -103,7 +103,7 @@ void QtArchiver::on_compressButton_clicked()
         }
         else
         {
-            QMessageBox::warning(this, "Warning", QString::fromStdString("Can't compress '" + huffmanExtension + "' files"));
+            QMessageBox::warning(this, "Warning", QString::fromStdWString(L"Can't compress '" + huffmanExtension + L"' files"));
         }
     }
 }

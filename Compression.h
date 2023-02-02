@@ -10,11 +10,9 @@ class Compressor : public QObject
 	Q_OBJECT
 
 public:
-	std::string filename;
-	std::string outputname;
-	Compressor(std::string filename, std::string outputname);
-
-
+	std::wstring filename;
+	std::wstring outputname;
+	Compressor(std::wstring filename, std::wstring outputname);
 
 signals:
 	void updateProgressBar(int value);
