@@ -14,10 +14,18 @@ public:
 
 private:
     Ui::QtArchiverClass ui;
-    QString inputPath;
+
+    QString inputFile;
     QString outputPath;
 
+    //Utils
     void clearPath(QLabel* label, QString& path);
+    QString replaceSymbols(const QString& path, const char& replaced, const char& replacedBy);
+    enum ALGORITHM defineMode();
+    bool isFileAndPathCorrect();
+    QString getInputFileExtension();
+    std::wstring getAppropriateExtension(ALGORITHM algorithm);
+
 private slots:
     void on_editFileButton_clicked();
     void on_editPathButton_clicked();

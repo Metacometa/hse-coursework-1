@@ -17,6 +17,7 @@ public:
 signals:
 	void updateProgressBar(int value);
 	void finished();
+
 private slots:
 	void huffmanCompression();
 	void huffmanDecompression();

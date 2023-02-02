@@ -9,7 +9,7 @@
 #include "Compression.h"
 
 enum MODES { COMPRESS, DECOMPRESS };
-enum ALGORITHMS { HUFFMAN };
+enum ALGORITHM { HUFFMAN };
 
 class CompressionDialog : public QDialog 
 {
@@ -18,7 +18,7 @@ class CompressionDialog : public QDialog
 public:
 
 	//Constructor / Destructor
-	CompressionDialog(MODES mode, QString inputPath, QString outputPath, ALGORITHMS inputAlgorithm, 
+	CompressionDialog(MODES mode, QString inputFile, QString outputPath, ALGORITHM inputAlgorithm, 
 		QWidget *parent = nullptr);
 	~CompressionDialog();
 
@@ -29,13 +29,13 @@ private:
 	Compressor *compressor;
 
 	//Variables
-	QString inputPath;
+	QString inputFile;
 	QString outputPath;
 	QTimer* timer;
 	short time;
 
 	MODES mode;
-	ALGORITHMS algorithm;
+	ALGORITHM algorithm;
 
 private slots:
 	void on_startButton_clicked();

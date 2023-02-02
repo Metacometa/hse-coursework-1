@@ -5,36 +5,36 @@
 #include <iostream>
 
 //Constructors / Destructors
-CompressionDialog::CompressionDialog(MODES mode, QString inputPath, QString outputPath,
-	ALGORITHMS inputAlgorithm, QWidget* parent) : QDialog(parent) 
+CompressionDialog::CompressionDialog(MODES mode, QString inputFile, QString outputPath,
+	ALGORITHM inputAlgorithm, QWidget* parent) : QDialog(parent) 
 {
-	ui.setupUi(this);
+	this->ui.setupUi(this);
 
 	this->mode = MODES(mode);
-	this->algorithm = ALGORITHMS(inputAlgorithm);
-	this->inputPath = inputPath;
+	this->algorithm = ALGORITHM(inputAlgorithm);
+	this->inputFile = inputFile;
 	this->outputPath = outputPath;
 
 	this->timer = new QTimer(this);
 	this->timer->setInterval(1000);
 
-	ui.progressBar->setMinimum(0);
-	ui.progressBar->setValue(0);
-	ui.progressBar->setMaximum(100);
+	this->ui.progressBar->setMinimum(0);
+	this->ui.progressBar->setValue(0);
+	this->ui.progressBar->setMaximum(100);
 
 	this->time = 0;
 
-	ui.fileLabel->setText(inputPath);
+	this->ui.fileLabel->setText(inputFile);
 	switch (this->mode) 
 	{
 		case COMPRESS: 
 		{
-			ui.processLabel->setText("Compression");
+			this->ui.processLabel->setText("Compression");
 			break;
 		}	
 		case DECOMPRESS: 
 		{
-			ui.processLabel->setText("Decompression");
+			this->ui.processLabel->setText("Decompression");
 			break;
 		}
 	}	
@@ -45,11 +45,11 @@ CompressionDialog::~CompressionDialog() {}
 void CompressionDialog::on_startButton_clicked() 
 {
 	QThread* compressorThread = new QThread();
-	this->compressor = new Compressor(this->inputPath.toStdWString(), this->outputPath.toStdWString());
+	this->compressor = new Compressor(this->inputFile.toStdWString(), this->outputPath.toStdWString());
 	this->compressor->moveToThread(compressorThread);
 
 	connect(this->timer, SIGNAL(timeout()), this, SLOT(timer_timeOut_event_slot()));
-	connect(compressor, SIGNAL(finished()), timer, SLOT(stop()));
+	connect(this->compressor, SIGNAL(finished()), this->timer, SLOT(stop()));
 
 	switch (this->algorithm) 
 	{
@@ -57,38 +57,38 @@ void CompressionDialog::on_startButton_clicked()
 		{
 			if (this->mode == COMPRESS)
 			{
-				connect(compressorThread, SIGNAL(started()), compressor, SLOT(huffmanCompression()));
+				connect(compressorThread, SIGNAL(started()), this->compressor, SLOT(huffmanCompression()));
 			}
 			else
 			{
-				connect(compressorThread, SIGNAL(started()), compressor, SLOT(huffmanDecompression()));
+				connect(compressorThread, SIGNAL(started()), this->compressor, SLOT(huffmanDecompression()));
 			}
 			break;
 		}
 	}
 
-	connect(compressor, SIGNAL(finished()), compressorThread, SLOT(quit()));
-	connect(compressor, SIGNAL(finished()), compressor, SLOT(deleteLater()));
+	connect(this->compressor, SIGNAL(finished()), compressorThread, SLOT(quit()));
+	connect(this->compressor, SIGNAL(finished()), this->compressor, SLOT(deleteLater()));
 	connect(compressorThread, SIGNAL(finished()), compressorThread, SLOT(deleteLater()));
-	connect(compressor, SIGNAL(finished()), this, SLOT(closeWindow()));
+	connect(this->compressor, SIGNAL(finished()), this, SLOT(closeWindow()));
 
-	ui.startButton->setDisabled(true);
+	this->ui.startButton->setDisabled(true);
 
 	//start timer ticking
-	timer->start();
+	this->timer->start();
 	
 	compressorThread->start();
 
-	connect(compressor, SIGNAL(updateProgressBar(int)), ui.progressBar, SLOT(setValue(int)));
+	connect(this->compressor, SIGNAL(updateProgressBar(int)), this->ui.progressBar, SLOT(setValue(int)));
 }
 
 void CompressionDialog::timer_timeOut_event_slot()
 {
 	std::string hours = "", minutes = "", seconds = "";
 	//seconds calculating
-	if (time % 60 < 10)
+	if (this->time % 60 < 10)
 	{
-		seconds = "0" + std::to_string(time % 60);
+		seconds = "0" + std::to_string(this->time % 60);
 	}
 	else
 	{
@@ -96,40 +96,40 @@ void CompressionDialog::timer_timeOut_event_slot()
 	}
 
 	//minutes calculating
-	if ((time / 60 % 60) < 10)
+	if ((this->time / 60 % 60) < 10)
 	{
-		minutes = "0" + std::to_string(time / 60 % 60);
+		minutes = "0" + std::to_string(this->time / 60 % 60);
 	}
 	else
 	{
-		minutes = std::to_string(time / 60 % 60);
+		minutes = std::to_string(this->time / 60 % 60);
 	}
 
 	//hours calculating
-	if (time / 3600 < 10)
+	if (this->time / 3600 < 10)
 	{
-		hours = "0" + std::to_string(time / 3600);
+		hours = "0" + std::to_string(this->time / 3600);
 	}
 	else
 	{
-		hours = std::to_string(time / 3600);
+		hours = std::to_string(this->time / 3600);
 	}
 
-	ui.timerLabel->setText(QString::fromStdString(hours) + ":" +
+	this->ui.timerLabel->setText(QString::fromStdString(hours) + ":" +
 	QString::fromStdString(minutes) + ":" +
 	QString::fromStdString(seconds));
-	time++;
+	this->time++;
 }
 
 void CompressionDialog::closeWindow()
 {
 	if (this->mode == COMPRESS) 
 	{
-		QMessageBox::information(this, "Done", "File is succesfully compressed!\nTotal time: " + ui.timerLabel->text());
+		QMessageBox::information(this, informationTitle, messageCompressionDone + ui.timerLabel->text());
 	} 
 	else
 	{
-		QMessageBox::information(this, "Done", "File is succesfully decompressed!\nTotal time: " + ui.timerLabel->text());
+		QMessageBox::information(this, informationTitle, messageDecompressionDone + ui.timerLabel->text());
 	}
 	this->close();
 }

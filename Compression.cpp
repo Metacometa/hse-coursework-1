@@ -15,13 +15,13 @@ Compressor::Compressor(std::wstring filename, std::wstring outputname)
 
 void Compressor::huffmanCompression() 
 {
-	size_t namestart = filename.length();
-	while (filename[namestart] != '\\') 
+	size_t namestart = this->filename.length();
+	while (this->filename[namestart] != '\\') 
 	{
 		namestart--;
 	}
 
-	std::wstring newname = filename.substr(namestart, filename.length());
+	std::wstring newname = this->filename.substr(namestart, this->filename.length());
 	size_t it = newname.length();
 	while (newname[it] != '.') 
 	{
@@ -30,7 +30,7 @@ void Compressor::huffmanCompression()
 
 	std::ifstream fr;
 
-	fr.open(filename, std::ios_base::in | std::ios_base::binary);
+	fr.open(this->filename, std::ios_base::in | std::ios_base::binary);
 
 	fr.seekg(0, std::ios_base::end);
 	std::streamoff length = fr.tellg();
@@ -131,9 +131,9 @@ void Compressor::huffmanCompression()
 
 void Compressor::huffmanDecompression() 
 {
-	size_t filelength = filename.length();
+	size_t filelength = this->filename.length();
 	size_t namestart = filelength;
-	while (filename[namestart] != '\\') 
+	while (this->filename[namestart] != '\\')
 	{
 		namestart--;
 	}
@@ -142,7 +142,7 @@ void Compressor::huffmanDecompression()
 	size_t extlength = currext.length();
 
 	std::ifstream coded;
-	coded.open(filename, std::ios_base::in | std::ios_base::binary);
+	coded.open(this->filename, std::ios_base::in | std::ios_base::binary);
 
 	coded.seekg(0, std::ios_base::end);
 	std::streamoff length = coded.tellg();
@@ -186,31 +186,39 @@ void Compressor::huffmanDecompression()
 	Simmetric(&(Prior->content), 0, code, table);
 
 	std::ofstream decoded;
-	decoded.open(outputname + filename.substr(namestart, filelength - extlength - namestart) + ext, std::ios_base::out | std::ios_base::binary);
+	decoded.open(this->outputname + this->filename.substr(namestart, filelength - extlength - namestart) + ext, std::ios_base::out | std::ios_base::binary);
 
 	BIT2CHAR buf;
 	BIT2CHAR bufnext;
 	buf.symb = coded.get();
 	CELL* temp = &(Prior->content);
-	while (1) {
+	while (1) 
+	{
 		bufnext.symb = coded.get();
 
 		//updating QtProgressBar
 		emit updateProgressBar(coded.tellg() * 100 / length);
 
-		if (coded.eof()) {
-			for (int i = 0; i < bit; i++) {
-				if (buf.mbit.b1 == 0) {
-					if (temp->left) {
+		if (coded.eof()) 
+		{
+			for (int i = 0; i < bit; i++) 
+			{
+				if (buf.mbit.b1 == 0) 
+				{
+					if (temp->left) 
+					{
 						temp = temp->left;
 					}
 				}
-				else {
-					if (temp->right) {
+				else 
+				{
+					if (temp->right) 
+					{
 						temp = temp->right;
 					}
 				}
-				if (temp->isSymb == '1') {
+				if (temp->isSymb == '1') 
+				{
 					decoded.put(temp->symb);
 					temp = &(Prior->content);
 				}
@@ -218,18 +226,24 @@ void Compressor::huffmanDecompression()
 			}
 			break;
 		}
-		for (int i = 0; i < 8; i++) {
-			if (buf.mbit.b1 == 0) {
-				if (temp->left) {
+		for (int i = 0; i < 8; i++) 
+		{
+			if (buf.mbit.b1 == 0) 
+			{
+				if (temp->left) 
+				{
 					temp = temp->left;
 				}
 			}
-			else {
-				if (temp->right) {
+			else 
+			{
+				if (temp->right) 
+				{
 					temp = temp->right;
 				}
 			}
-			if (temp->isSymb == '1') {
+			if (temp->isSymb == '1') 
+			{
 				decoded.put(temp->symb);
 				temp = &(Prior->content);
 			}
