@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>492</width>
-    <height>106</height>
+    <width>490</width>
+    <height>109</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,24 +33,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="pathNameLabel">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_4">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
+       <widget class="QLineEdit" name="pathLine"/>
       </item>
       <item>
        <widget class="QPushButton" name="editPathButton">
@@ -73,24 +56,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="fileNameLabel">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
+         <widget class="QLineEdit" name="fileLine"/>
         </item>
         <item>
          <widget class="QPushButton" name="editFileButton">

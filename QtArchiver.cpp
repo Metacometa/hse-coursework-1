@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "QtArchiver.h"
@@ -11,30 +10,20 @@
 QtArchiver::QtArchiver(QWidget* parent)
     : QWidget(parent) {
     this->ui.setupUi(this);
-    this->inputFile = emptyFile;
-    this->outputPath = emptyPath;
-    this->ui.fileNameLabel->setText(this->inputFile);
-    this->ui.pathNameLabel->setText(this->outputPath);
 }
 
 QtArchiver::~QtArchiver() {}
 
 //private
 //utils
-void QtArchiver::clearPath(QLabel* label, QString& path)
-{
-    path = emptyPath;
-    label->setText(path);
-}
-
-QString QtArchiver::replaceSymbols(const QString &path, const char &replaced, const char &replacedBy) 
+QString QtArchiver::replaceSymbols(const QString& path, const char& replaced, const char& replacedBy)
 {
     /*
         @replaceSymbols replace all chars in string on chosen char
     */
     QString temp = "";
 
-    for (auto& i : path) 
+    for (auto& i : path)
     {
         if (i == replaced)
         {
@@ -62,11 +51,9 @@ std::wstring QtArchiver::getAppropriateExtension(ALGORITHM algorithm)
 {
     switch (algorithm)
     {
-        case HUFFMAN:
-        {
-            return huffmanExtension;
-            break;
-        }
+    case HUFFMAN:
+        return huffmanExtension;
+        break;
     }
     return L"";
 }
@@ -76,22 +63,22 @@ bool QtArchiver::isFileAndPathCorrect()
     /*
         @isFileAndPathcorrect check, if user enter path and file or not
     */
-    if (this->inputFile == emptyFile and this->outputPath == emptyPath)
+    if (!QFile::exists(this->ui.fileLine->text()) and !QFile::exists(this->ui.pathLine->text()))
     {
-        QMessageBox::warning(this, warningTitle, messageNoFileAndPath);
+        QMessageBox::warning(this, warningTitle, messageWrongFileAndPath);
         return false;
     }
-    else if (this->inputFile == emptyFile)
+    else if (!QFile::exists(this->ui.fileLine->text()))
     {
-        QMessageBox::warning(this, warningTitle, messageNoFile);
+        QMessageBox::warning(this, warningTitle, messageWrongFile);
         return false;
     }
-    else if (this->outputPath == emptyPath)
+    else if (!QFile::exists(this->ui.pathLine->text()))
     {
-        QMessageBox::warning(this, warningTitle, messageNoPath);
+        QMessageBox::warning(this, warningTitle, messageWrongPath);
         return false;
     }
-    else 
+    else
     {
         return true;
     }
@@ -100,54 +87,53 @@ bool QtArchiver::isFileAndPathCorrect()
 QString QtArchiver::getInputFileExtension()
 {
     QString inputExtension = "";
-    for (qsizetype i = this->inputFile.length() - 1; i >= 0 and this->inputFile[i] != '.'; --i)
+    QString fileDir = this->ui.fileLine->text();
+    for (qsizetype i = fileDir.length() - 1; i >= 0 and fileDir[i] != '.'; --i)
     {
-        inputExtension = inputFile[i] + inputExtension;
+        inputExtension = fileDir[i] + inputExtension;
     }
     inputExtension = "." + inputExtension;
     return inputExtension;
 }
 
 //private slots
-void QtArchiver::on_editFileButton_clicked() 
+void QtArchiver::on_editFileButton_clicked()
 {
     QFileDialog loadFile(this);
-    loadFile.setFileMode(QFileDialog::ExistingFile); //set picking of ONLY ONE file
+    loadFile.setFileMode(QFileDialog::ExistingFile); //set picking of only ONE file
     loadFile.exec();
     QStringList selectedFiles = loadFile.selectedFiles();
 
-    if (!selectedFiles.isEmpty()) 
+    if (!selectedFiles.isEmpty())
     {
-        this->inputFile = replaceSymbols(selectedFiles.at(0), '/', '\\');
-        this->ui.fileNameLabel->setText(this->inputFile);
+        this->ui.fileLine->setText(replaceSymbols(selectedFiles.at(0), '/', '\\'));
     }
 }
 
 void QtArchiver::on_editPathButton_clicked() {
     QFileDialog loadFile(this);
-    loadFile.setFileMode(QFileDialog::Directory); //set picking of ONLY ONE directory
+    loadFile.setFileMode(QFileDialog::Directory); //set picking of only ONE directory
     loadFile.exec();
     QStringList selectedFiles = loadFile.selectedFiles();
 
-    if (!selectedFiles.isEmpty()) 
+    if (!selectedFiles.isEmpty())
     {
-        this->outputPath = replaceSymbols(selectedFiles.at(0), '/', '\\');
-        this->ui.pathNameLabel->setText(this->outputPath);
+        this->ui.pathLine->setText(replaceSymbols(selectedFiles.at(0), '/', '\\'));
     }
 }
 
-void QtArchiver::on_compressButton_clicked() 
+void QtArchiver::on_compressButton_clicked()
 {
     ALGORITHM algorithm = defineMode();
 
     if (isFileAndPathCorrect()) //If path and file chosen successfully 
     {
-        CompressionDialog dialog(COMPRESS, this->inputFile, this->outputPath, algorithm);
+        CompressionDialog dialog(COMPRESS, this->ui.fileLine->text(), this->ui.pathLine->text(), algorithm);
         dialog.exec();
     }
 }
 
-void QtArchiver::on_decompressButton_clicked() //If path and file chosen successfully 
+void QtArchiver::on_decompressButton_clicked()
 {
     /*
         @Decompressor can decompress only appropriate files
@@ -156,19 +142,19 @@ void QtArchiver::on_decompressButton_clicked() //If path and file chosen success
     ALGORITHM algorithm = defineMode();
     std::wstring appropriateExtension = getAppropriateExtension(algorithm);
 
-    if (isFileAndPathCorrect())
+    if (isFileAndPathCorrect()) //If path and file chosen successfully 
     {
         QString inputFileExtension = getInputFileExtension();
         if (inputFileExtension.toStdWString() == appropriateExtension) //check, if it is appropriate file extension
         {
             //load compressor dialog with decompress params
-            CompressionDialog dialog(DECOMPRESS, this->inputFile, this->outputPath, algorithm);
+            CompressionDialog dialog(DECOMPRESS, this->ui.fileLine->text(), this->ui.pathLine->text(), algorithm);
             dialog.exec();
         }
         else
         {
-            QMessageBox::warning(this, warningTitle, "Can't decompress '" + inputFileExtension + "' by " + ui.compressionAlgorithms->currentText() +
-                " algorithm.");
+            QMessageBox::warning(this, warningTitle, "Can't decompress '" + inputFileExtension + "' by " +
+                this->ui.compressionAlgorithms->currentText() + " algorithm.");
         }
     }
 }

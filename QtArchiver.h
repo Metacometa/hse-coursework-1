@@ -19,7 +19,6 @@ private:
     QString outputPath;
 
     //Utils
-    void clearPath(QLabel* label, QString& path);
     QString replaceSymbols(const QString& path, const char& replaced, const char& replacedBy);
     enum ALGORITHM defineMode();
     bool isFileAndPathCorrect();
