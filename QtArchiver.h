@@ -2,6 +2,7 @@
 
 #include <QtWidgets/QWidget>
 #include "ui_QtArchiver.h"
+#include <QFileDialog>
 
 class QtArchiver : public QWidget
 {
@@ -19,11 +20,11 @@ private:
     QString outputPath;
 
     //Utils
-    QString replaceSymbols(const QString& path, const char& replaced, const char& replacedBy);
     enum ALGORITHM defineMode();
     bool isFileAndPathCorrect();
     QString getInputFileExtension();
     std::wstring getAppropriateExtension(ALGORITHM algorithm);
+    void loadPath(QWidget* parent, QLineEdit* line, QFileDialog::FileMode mode);
 
 private slots:
     void on_editFileButton_clicked();
@@ -31,4 +32,5 @@ private slots:
 
     void on_compressButton_clicked();
     void on_decompressButton_clicked();
+
 };

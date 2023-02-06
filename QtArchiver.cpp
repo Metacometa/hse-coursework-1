@@ -16,28 +16,6 @@ QtArchiver::~QtArchiver() {}
 
 //private
 //utils
-QString QtArchiver::replaceSymbols(const QString& path, const char& replaced, const char& replacedBy)
-{
-    /*
-        @replaceSymbols replace all chars in string on chosen char
-    */
-    QString temp = "";
-
-    for (auto& i : path)
-    {
-        if (i == replaced)
-        {
-            temp += replacedBy;
-        }
-        else
-        {
-            temp += i;
-        }
-    }
-
-    return temp;
-}
-
 ALGORITHM QtArchiver::defineMode()
 {
     if (this->ui.compressionAlgorithms->currentText() == "Huffman")
@@ -54,8 +32,9 @@ std::wstring QtArchiver::getAppropriateExtension(ALGORITHM algorithm)
     case HUFFMAN:
         return huffmanExtension;
         break;
+    default:
+        return L"";
     }
-    return L"";
 }
 
 bool QtArchiver::isFileAndPathCorrect()
@@ -96,30 +75,29 @@ QString QtArchiver::getInputFileExtension()
     return inputExtension;
 }
 
-//private slots
-void QtArchiver::on_editFileButton_clicked()
+void QtArchiver::loadPath(QWidget *parent, QLineEdit *line, QFileDialog::FileMode mode)
 {
-    QFileDialog loadFile(this);
-    loadFile.setFileMode(QFileDialog::ExistingFile); //set picking of only ONE file
+    QFileDialog loadFile(parent);
+    loadFile.setFileMode(mode);
     loadFile.exec();
     QStringList selectedFiles = loadFile.selectedFiles();
 
     if (!selectedFiles.isEmpty())
     {
-        this->ui.fileLine->setText(replaceSymbols(selectedFiles.at(0), '/', '\\'));
+        QString path = selectedFiles.at(0);
+        line->setText(path.replace("/", "\\"));
     }
 }
 
-void QtArchiver::on_editPathButton_clicked() {
-    QFileDialog loadFile(this);
-    loadFile.setFileMode(QFileDialog::Directory); //set picking of only ONE directory
-    loadFile.exec();
-    QStringList selectedFiles = loadFile.selectedFiles();
+//private slots
+void QtArchiver::on_editFileButton_clicked()
+{
+    loadPath(this, this->ui.fileLine, QFileDialog::ExistingFile);
+}
 
-    if (!selectedFiles.isEmpty())
-    {
-        this->ui.pathLine->setText(replaceSymbols(selectedFiles.at(0), '/', '\\'));
-    }
+void QtArchiver::on_editPathButton_clicked() 
+{
+    loadPath(this, this->ui.pathLine, QFileDialog::Directory);
 }
 
 void QtArchiver::on_compressButton_clicked()

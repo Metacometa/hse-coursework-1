@@ -21,22 +21,21 @@ CompressionDialog::CompressionDialog(MODES mode, QString inputFile, QString outp
 	this->ui.progressBar->setMinimum(0);
 	this->ui.progressBar->setValue(0);
 	this->ui.progressBar->setMaximum(100);
-
 	this->time = 0;
 
-	this->ui.fileLabel->setText(inputFile);
-	switch (this->mode) 
+	this->ui.filePathLabel->setText(inputFile);
+	switch (this->algorithm)
 	{
-		case COMPRESS: 
+	case HUFFMAN:
+		if (this->mode == COMPRESS)
 		{
-			this->ui.processLabel->setText("Compression");
-			break;
-		}	
-		case DECOMPRESS: 
-		{
-			this->ui.processLabel->setText("Decompression");
-			break;
+			this->setWindowTitle("Huffman compression");
 		}
+		else
+		{
+			this->setWindowTitle("Huffman decompression");
+		}
+		break;
 	}	
 }
 
