@@ -10,20 +10,38 @@ CompressionDialog::CompressionDialog(MODES mode, QString inputFile, QString outp
 {
 	this->ui.setupUi(this);
 
+	initCompressionProperties(mode, inputAlgorithm);
+	initPaths(inputFile, outputPath);
+	initTimer();
+	setPathLabel();
+
+	this->time = 0;
+}
+
+CompressionDialog::~CompressionDialog() {}
+
+//Util functions void set
+void CompressionDialog::initCompressionProperties(MODES mode, ALGORITHM inputAlgorithm)
+{
 	this->mode = MODES(mode);
 	this->algorithm = ALGORITHM(inputAlgorithm);
+	setCorrespondingWindowTitle();
+}
+
+void CompressionDialog::initPaths(QString inputFile, QString outputPath)
+{
 	this->inputFile = inputFile;
 	this->outputPath = outputPath;
+}
 
+void CompressionDialog::initTimer()
+{
 	this->timer = new QTimer(this);
 	this->timer->setInterval(1000);
+}
 
-	this->ui.progressBar->setMinimum(0);
-	this->ui.progressBar->setValue(0);
-	this->ui.progressBar->setMaximum(100);
-	this->time = 0;
-
-	this->ui.filePathLabel->setText(inputFile);
+void CompressionDialog::setCorrespondingWindowTitle()
+{
 	switch (this->algorithm)
 	{
 	case HUFFMAN:
@@ -36,49 +54,82 @@ CompressionDialog::CompressionDialog(MODES mode, QString inputFile, QString outp
 			this->setWindowTitle("Huffman decompression");
 		}
 		break;
-	}	
+	}
 }
 
-CompressionDialog::~CompressionDialog() {}
+void CompressionDialog::setPathLabel()
+{
+	int temp = this->inputFile.length();
+	if (this->inputFile.length() <= 2 * HALF_LENGHT_FILE_PATH_LABEL)
+	{
+		this->ui.filePathLabel->setText(this->inputFile);
+	}
+	else
+	{
+		QString newValueOfLabel = "...";
+		QString left = "", right = "";
+		for (int i = 0; i < HALF_LENGHT_FILE_PATH_LABEL; ++i)
+		{
+			left = left + this->inputFile[i];
+			right = this->inputFile[this->inputFile.length() - 1 - i] + right;
+		}
+		newValueOfLabel = left + newValueOfLabel + right;
+		this->ui.filePathLabel->setText(newValueOfLabel);
+	}
+}
 
-void CompressionDialog::on_startButton_clicked() 
+void CompressionDialog::setTimerConnections()
+{
+	connect(this->timer, SIGNAL(timeout()), this, SLOT(timer_timeOut_event_slot()));
+	connect(this->compressor, SIGNAL(finished()), this->timer, SLOT(stop()));
+	this->timer->start();
+}
+
+void CompressionDialog::setAlgorithmConnection(QThread* thread)
+{
+	switch (this->algorithm)
+	{
+	case HUFFMAN:
+	{
+		if (this->mode == COMPRESS)
+		{
+			connect(thread, SIGNAL(started()), this->compressor, SLOT(huffmanCompression()));
+		}
+		else
+		{
+			connect(thread, SIGNAL(started()), this->compressor, SLOT(huffmanDecompression()));
+		}
+		break;
+	}
+	}
+}
+
+void CompressionDialog::setFinishedConnections(QThread* thread)
+{
+	connect(this->compressor, SIGNAL(finished()), thread, SLOT(quit()));
+	connect(this->compressor, SIGNAL(finished()), this->compressor, SLOT(deleteLater()));
+	connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+	connect(this->compressor, SIGNAL(finished()), this, SLOT(closeWindow()));
+}
+
+void CompressionDialog::createCompressorThread()
 {
 	QThread* compressorThread = new QThread();
 	this->compressor = new Compressor(this->inputFile.toStdWString(), this->outputPath.toStdWString());
 	this->compressor->moveToThread(compressorThread);
-
-	connect(this->timer, SIGNAL(timeout()), this, SLOT(timer_timeOut_event_slot()));
-	connect(this->compressor, SIGNAL(finished()), this->timer, SLOT(stop()));
-
-	switch (this->algorithm) 
-	{
-		case HUFFMAN:  
-		{
-			if (this->mode == COMPRESS)
-			{
-				connect(compressorThread, SIGNAL(started()), this->compressor, SLOT(huffmanCompression()));
-			}
-			else
-			{
-				connect(compressorThread, SIGNAL(started()), this->compressor, SLOT(huffmanDecompression()));
-			}
-			break;
-		}
-	}
-
-	connect(this->compressor, SIGNAL(finished()), compressorThread, SLOT(quit()));
-	connect(this->compressor, SIGNAL(finished()), this->compressor, SLOT(deleteLater()));
-	connect(compressorThread, SIGNAL(finished()), compressorThread, SLOT(deleteLater()));
-	connect(this->compressor, SIGNAL(finished()), this, SLOT(closeWindow()));
-
-	this->ui.startButton->setDisabled(true);
-
-	//start timer ticking
-	this->timer->start();
-	
-	compressorThread->start();
-
+	setTimerConnections();
+	setAlgorithmConnection(compressorThread);
+	setFinishedConnections(compressorThread);
 	connect(this->compressor, SIGNAL(updateProgressBar(int)), this->ui.progressBar, SLOT(setValue(int)));
+
+	compressorThread->start();
+}
+
+//private slots
+void CompressionDialog::on_startButton_clicked() 
+{
+	this->ui.startButton->setDisabled(true);
+	createCompressorThread();
 }
 
 void CompressionDialog::timer_timeOut_event_slot()

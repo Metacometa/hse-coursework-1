@@ -2,6 +2,8 @@
 #include <string>
 #include <QString>
 
+const int HALF_LENGHT_FILE_PATH_LABEL = 30;
+
 const std::wstring huffmanExtension = L".huffman";
 
 const QString warningTitle = "Warning";
