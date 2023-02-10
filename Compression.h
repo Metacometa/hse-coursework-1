@@ -10,6 +10,7 @@ class Compressor : public QObject
 	Q_OBJECT
 
 public:
+	bool isPaused;
 	std::wstring filename;
 	std::wstring outputname;
 	Compressor(std::wstring filename, std::wstring outputname);

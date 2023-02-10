@@ -44,23 +44,30 @@ bool QtArchiver::isFileAndPathCorrect()
     */
     if (!QFile::exists(this->ui.fileLine->text()) and !QFile::exists(this->ui.pathLine->text()))
     {
-        QMessageBox::warning(this, warningTitle, messageWrongFileAndPath);
+        QMessageBox::warning(this, warningTitle, wrongFileAndPathMessage);
         return false;
     }
     else if (!QFile::exists(this->ui.fileLine->text()))
     {
-        QMessageBox::warning(this, warningTitle, messageWrongFile);
+        QMessageBox::warning(this, warningTitle, wrongFileMessage);
         return false;
     }
     else if (!QFile::exists(this->ui.pathLine->text()))
     {
-        QMessageBox::warning(this, warningTitle, messageWrongPath);
+        QMessageBox::warning(this, warningTitle, wrongPathMessage);
         return false;
     }
-    else
+    QFile testOfEmptiness(ui.fileLine->text());
+    testOfEmptiness.open(QIODevice::ReadOnly);
+
+    bool isEmpty = testOfEmptiness.size();
+    if (!isEmpty)
     {
-        return true;
+        QMessageBox::warning(this, warningTitle, emptyFileMessage);
     }
+    testOfEmptiness.close();
+    return isEmpty;
+
 }
 
 QString QtArchiver::getInputFileExtension()

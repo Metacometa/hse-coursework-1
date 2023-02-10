@@ -14,6 +14,7 @@ CompressionDialog::CompressionDialog(MODES mode, QString inputFile, QString outp
 	initPaths(inputFile, outputPath);
 	initTimer();
 	setPathLabel();
+	createCompressorThread();
 
 	this->time = 0;
 }
@@ -126,12 +127,6 @@ void CompressionDialog::createCompressorThread()
 }
 
 //private slots
-void CompressionDialog::on_startButton_clicked() 
-{
-	this->ui.startButton->setDisabled(true);
-	createCompressorThread();
-}
-
 void CompressionDialog::timer_timeOut_event_slot()
 {
 	std::string hours = "", minutes = "", seconds = "";
@@ -175,11 +170,11 @@ void CompressionDialog::closeWindow()
 {
 	if (this->mode == COMPRESS) 
 	{
-		QMessageBox::information(this, informationTitle, messageCompressionDone + ui.timerLabel->text());
+		QMessageBox::information(this, informationTitle, compressionDoneMessage + ui.timerLabel->text());
 	} 
 	else
 	{
-		QMessageBox::information(this, informationTitle, messageDecompressionDone + ui.timerLabel->text());
+		QMessageBox::information(this, informationTitle, decompressionDoneMessage + ui.timerLabel->text());
 	}
 	this->close();
 }

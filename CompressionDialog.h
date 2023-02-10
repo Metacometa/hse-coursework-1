@@ -47,7 +47,6 @@ private:
 	void createCompressorThread();
 
 private slots:
-	void on_startButton_clicked();
 	void timer_timeOut_event_slot();
 	void closeWindow();
 };

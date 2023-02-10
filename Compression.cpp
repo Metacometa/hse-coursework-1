@@ -14,6 +14,7 @@ Compressor::Compressor(std::wstring filename, std::wstring outputname)
 
 void Compressor::huffmanCompression() 
 {
+	this->isPaused = false;
 	size_t namestart = this->filename.length();
 	while (this->filename[namestart] != '\\') 
 	{
@@ -84,6 +85,8 @@ void Compressor::huffmanCompression()
 	int currbit = 0;
 	for (std::streamoff i = 0; i < length; ++i) 
 	{
+		while (this->isPaused) {}
+
 		int currsymb = (unsigned int)fr.get();
 		int pointer = 0;
 
