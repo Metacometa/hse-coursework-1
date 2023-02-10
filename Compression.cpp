@@ -195,67 +195,68 @@ void Compressor::huffmanDecompression()
 	BIT2CHAR bufnext;
 	buf.symb = coded.get();
 	CELL* temp = &(Prior->content);
-	while (1) 
+	while (true) 
 	{
 		//pausing
-		while (this->isPaused) {}
-
-		bufnext.symb = coded.get();
-
-		//updating QtProgressBar
-		emit updateProgressBar(coded.tellg() * 100 / length);
-
-		if (coded.eof()) 
+		if (!this->isPaused) 
 		{
-			for (int i = 0; i < bit; i++) 
+			bufnext.symb = coded.get();
+
+			//updating QtProgressBar
+			emit updateProgressBar(coded.tellg() * 100 / length);
+
+			if (coded.eof())
 			{
-				if (buf.mbit.b1 == 0) 
+				for (int i = 0; i < bit; i++)
 				{
-					if (temp->left) 
+					if (buf.mbit.b1 == 0)
+					{
+						if (temp->left)
+						{
+							temp = temp->left;
+						}
+					}
+					else
+					{
+						if (temp->right)
+						{
+							temp = temp->right;
+						}
+					}
+					if (temp->isSymb == '1')
+					{
+						decoded.put(temp->symb);
+						temp = &(Prior->content);
+					}
+					buf.symb = buf.symb >> 1;
+				}
+				break;
+			}
+			for (int i = 0; i < 8; i++)
+			{
+				if (buf.mbit.b1 == 0)
+				{
+					if (temp->left)
 					{
 						temp = temp->left;
 					}
 				}
-				else 
+				else
 				{
-					if (temp->right) 
+					if (temp->right)
 					{
 						temp = temp->right;
 					}
 				}
-				if (temp->isSymb == '1') 
+				if (temp->isSymb == '1')
 				{
 					decoded.put(temp->symb);
 					temp = &(Prior->content);
 				}
 				buf.symb = buf.symb >> 1;
 			}
-			break;
+			buf = bufnext;
 		}
-		for (int i = 0; i < 8; i++) 
-		{
-			if (buf.mbit.b1 == 0) 
-			{
-				if (temp->left) 
-				{
-					temp = temp->left;
-				}
-			}
-			else 
-			{
-				if (temp->right) 
-				{
-					temp = temp->right;
-				}
-			}
-			if (temp->isSymb == '1') 
-			{
-				decoded.put(temp->symb);
-				temp = &(Prior->content);
-			}
-			buf.symb = buf.symb >> 1;
-		}
-		buf = bufnext;
 	}
 
 	coded.close();
