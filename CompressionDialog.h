@@ -46,7 +46,11 @@ private:
 	void setFinishedConnections(QThread* thread);
 	void createCompressorThread();
 
+signals:
+	void pauseIsClicked();
+
 private slots:
+	void on_pauseButton_clicked();
 	void timer_timeOut_event_slot();
 	void closeWindow();
 };

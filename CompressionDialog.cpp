@@ -9,13 +9,11 @@ CompressionDialog::CompressionDialog(MODES mode, QString inputFile, QString outp
 	ALGORITHM inputAlgorithm, QWidget* parent) : QDialog(parent) 
 {
 	this->ui.setupUi(this);
-
 	initCompressionProperties(mode, inputAlgorithm);
 	initPaths(inputFile, outputPath);
 	initTimer();
 	setPathLabel();
 	createCompressorThread();
-
 	this->time = 0;
 }
 
@@ -91,7 +89,6 @@ void CompressionDialog::setAlgorithmConnection(QThread* thread)
 	switch (this->algorithm)
 	{
 	case HUFFMAN:
-	{
 		if (this->mode == COMPRESS)
 		{
 			connect(thread, SIGNAL(started()), this->compressor, SLOT(huffmanCompression()));
@@ -101,7 +98,6 @@ void CompressionDialog::setAlgorithmConnection(QThread* thread)
 			connect(thread, SIGNAL(started()), this->compressor, SLOT(huffmanDecompression()));
 		}
 		break;
-	}
 	}
 }
 
@@ -122,11 +118,26 @@ void CompressionDialog::createCompressorThread()
 	setAlgorithmConnection(compressorThread);
 	setFinishedConnections(compressorThread);
 	connect(this->compressor, SIGNAL(updateProgressBar(int)), this->ui.progressBar, SLOT(setValue(int)));
+	connect(this, SIGNAL(pauseIsClicked()), this->compressor, SLOT(reverseIsPaused()), Qt::DirectConnection);
 
 	compressorThread->start();
 }
 
 //private slots
+void CompressionDialog::on_pauseButton_clicked()
+{
+	if (this->timer->isActive())
+	{
+		this->timer->stop();
+	}
+	else
+	{
+		this->timer->start();
+	}
+
+	emit pauseIsClicked();
+}
+
 void CompressionDialog::timer_timeOut_event_slot()
 {
 	std::string hours = "", minutes = "", seconds = "";

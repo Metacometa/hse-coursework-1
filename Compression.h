@@ -22,4 +22,6 @@ signals:
 private slots:
 	void huffmanCompression();
 	void huffmanDecompression();
+	void reverseIsPaused();
+
 };
