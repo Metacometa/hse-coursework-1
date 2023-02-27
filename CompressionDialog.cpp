@@ -11,7 +11,7 @@ CompressionDialog::CompressionDialog(MODES mode, QString inputFile, QString outp
 	this->ui.setupUi(this);
 	initCompressionProperties(mode, inputAlgorithm);
 	initPaths(inputFile, outputPath);
-	initTimer();
+	initTimers();
 	setPathLabel();
 	createCompressorThread();
 	this->time = 0;
@@ -33,10 +33,13 @@ void CompressionDialog::initPaths(QString inputFile, QString outputPath)
 	this->outputPath = outputPath;
 }
 
-void CompressionDialog::initTimer()
+void CompressionDialog::initTimers()
 {
 	this->timer = new QTimer(this);
 	this->timer->setInterval(1000);
+
+	this->progressBarUpdatingTimer = new QTimer(this);
+	this->progressBarUpdatingTimer->setInterval(160);
 }
 
 void CompressionDialog::setCorrespondingWindowTitle()
@@ -81,7 +84,6 @@ void CompressionDialog::setTimerConnections()
 {
 	connect(this->timer, SIGNAL(timeout()), this, SLOT(timer_timeOut_event_slot()));
 	connect(this->compressor, SIGNAL(finished()), this->timer, SLOT(stop()));
-	this->timer->start();
 }
 
 void CompressionDialog::setAlgorithmConnection(QThread* thread)
@@ -119,6 +121,10 @@ void CompressionDialog::createCompressorThread()
 	setFinishedConnections(compressorThread);
 	connect(this->compressor, SIGNAL(updateProgressBar(int)), this->ui.progressBar, SLOT(setValue(int)));
 	connect(this, SIGNAL(pauseIsClicked()), this->compressor, SLOT(reverseIsPaused()), Qt::DirectConnection);
+	connect(this->timer, SIGNAL(timeout()), this->compressor, SLOT(reverseCanBeUpdated()), Qt::DirectConnection);
+	
+	this->timer->start();
+	this->progressBarUpdatingTimer->start();
 
 	compressorThread->start();
 }

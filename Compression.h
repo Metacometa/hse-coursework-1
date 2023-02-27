@@ -11,6 +11,8 @@ class Compressor : public QObject
 
 public:
 	bool isPaused;
+	bool canBeUpdated;
+	long long counter = 0;
 	std::wstring filename;
 	std::wstring outputname;
 	Compressor(std::wstring filename, std::wstring outputname);
@@ -23,5 +25,6 @@ private slots:
 	void huffmanCompression();
 	void huffmanDecompression();
 	void reverseIsPaused();
+	void reverseCanBeUpdated();
 
 };

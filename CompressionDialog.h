@@ -30,6 +30,7 @@ private:
 	QString inputFile;
 	QString outputPath;
 	QTimer* timer;
+	QTimer* progressBarUpdatingTimer;
 	short time;
 
 	MODES mode;
@@ -38,7 +39,7 @@ private:
 	//Util functions void set
 	void initCompressionProperties(MODES mode, ALGORITHM inputAlgorithm);
 	void initPaths(QString inputFile, QString outputPath);
-	void initTimer();
+	void initTimers();
 	void setCorrespondingWindowTitle();
 	void setPathLabel(); 
 	void setTimerConnections();

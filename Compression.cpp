@@ -11,6 +11,7 @@ Compressor::Compressor(std::wstring filename, std::wstring outputname)
 	this->filename = filename;
 	this->outputname = outputname;
 	this->isPaused = false;
+	this->canBeUpdated = false;
 }
 
 void Compressor::huffmanCompression() 
@@ -92,7 +93,11 @@ void Compressor::huffmanCompression()
 		int pointer = 0;
 
 		//updating QtProgressBar
-		emit updateProgressBar(i * 100 / length);
+		if (canBeUpdated) {
+			emit updateProgressBar(i * 100 / length);
+			counter = 0;
+			canBeUpdated = false;
+		}
 
 		while (table[currsymb][pointer] != 0) 
 		{
@@ -203,7 +208,11 @@ void Compressor::huffmanDecompression()
 			bufnext.symb = coded.get();
 
 			//updating QtProgressBar
-			emit updateProgressBar(coded.tellg() * 100 / length);
+			if (canBeUpdated) {
+				emit updateProgressBar(coded.tellg() * 100 / length);
+				counter = 0;
+				canBeUpdated = false;
+			}
 
 			if (coded.eof())
 			{
@@ -270,6 +279,11 @@ void Compressor::huffmanDecompression()
 void Compressor::reverseIsPaused()
 {
 	this->isPaused = !this->isPaused;
+}
+
+void Compressor::reverseCanBeUpdated()
+{
+	canBeUpdated = true;
 }
 
 
