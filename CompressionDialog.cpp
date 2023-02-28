@@ -121,7 +121,7 @@ void CompressionDialog::createCompressorThread()
 	setFinishedConnections(compressorThread);
 	connect(this->compressor, SIGNAL(updateProgressBar(int)), this->ui.progressBar, SLOT(setValue(int)));
 	connect(this, SIGNAL(pauseIsClicked()), this->compressor, SLOT(reverseIsPaused()), Qt::DirectConnection);
-	connect(this->timer, SIGNAL(timeout()), this->compressor, SLOT(reverseCanBeUpdated()), Qt::DirectConnection);
+	connect(this->progressBarUpdatingTimer, SIGNAL(timeout()), this->compressor, SLOT(reverseCanBeUpdated()), Qt::DirectConnection);
 	
 	this->timer->start();
 	this->progressBarUpdatingTimer->start();
