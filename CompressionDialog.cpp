@@ -134,10 +134,12 @@ void CompressionDialog::on_pauseButton_clicked()
 {
 	if (this->timer->isActive())
 	{
+		this->ui.pauseButton->setText(pauseButtonPausedText);
 		this->timer->stop();
 	}
 	else
 	{
+		this->ui.pauseButton->setText(pauseButtonUnpausedText);
 		this->timer->start();
 	}
 

@@ -15,3 +15,6 @@ const QString emptyFileMessage = "File is empty";
 const QString informationTitle = "Done";
 const QString compressionDoneMessage = "File is succesfully compressed!\nTotal time: ";
 const QString decompressionDoneMessage = "File is succesfully decompressed!\nTotal time: ";
+
+const QString pauseButtonUnpausedText = "Pause";
+const QString pauseButtonPausedText = "Unpause";
