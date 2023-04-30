@@ -56,7 +56,17 @@ void CompressionDialog::setCorrespondingWindowTitle()
 			this->setWindowTitle("Huffman decompression");
 		}
 		break;
+	case LZW:
+		if (this->mode == COMPRESS)
+		{
+			this->setWindowTitle("LZW compression");
+		}
+		else
+		{
+			this->setWindowTitle("LZW decompression");
+		}
 	}
+
 }
 
 void CompressionDialog::setPathLabel()
@@ -88,6 +98,7 @@ void CompressionDialog::setTimerConnections()
 
 void CompressionDialog::setAlgorithmConnection(QThread* thread)
 {
+
 	switch (this->algorithm)
 	{
 	case HUFFMAN:
@@ -100,6 +111,15 @@ void CompressionDialog::setAlgorithmConnection(QThread* thread)
 			connect(thread, SIGNAL(started()), this->compressor, SLOT(huffmanDecompression()));
 		}
 		break;
+	case LZW:
+		if (this->mode == COMPRESS)
+		{
+			connect(thread, SIGNAL(started()), this->compressor, SLOT(lzwCompression()));
+		}
+		else
+		{
+			connect(thread, SIGNAL(started()), this->compressor, SLOT(lzwDecompression()));
+		}
 	}
 }
 

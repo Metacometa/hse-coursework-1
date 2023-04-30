@@ -9,7 +9,7 @@
 #include "Compression.h"
 
 enum MODES { COMPRESS, DECOMPRESS };
-enum ALGORITHM { HUFFMAN };
+enum ALGORITHM { HUFFMAN, LZW };
 
 class CompressionDialog : public QDialog 
 {

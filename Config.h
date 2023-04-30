@@ -5,6 +5,7 @@
 const int HALF_LENGHT_FILE_PATH_LABEL = 30;
 
 const std::wstring huffmanExtension = L".huffman";
+const std::wstring lzwExtension = L".lzw";
 
 const QString warningTitle = "Warning";
 const QString wrongFileAndPathMessage = "Wrong file and directory path";

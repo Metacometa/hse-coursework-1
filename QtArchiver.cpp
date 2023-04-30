@@ -5,6 +5,7 @@
 #include <QFileDialog.h>
 #include <QMessageBox.h>
 #include "CompressionDialog.h"
+#include <iostream>
 
 //Constructors / Destructors
 QtArchiver::QtArchiver(QWidget* parent)
@@ -22,6 +23,10 @@ ALGORITHM QtArchiver::defineMode()
     {
         return ALGORITHM::HUFFMAN;
     }
+    else if (this->ui.compressionAlgorithms->currentText() == "LZW")
+    {
+        return ALGORITHM::LZW;
+    }
     return ALGORITHM();
 }
 
@@ -31,7 +36,8 @@ std::wstring QtArchiver::getAppropriateExtension(ALGORITHM algorithm)
     {
     case HUFFMAN:
         return huffmanExtension;
-        break;
+    case LZW:
+        return lzwExtension;
     default:
         return L"";
     }
