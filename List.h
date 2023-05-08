@@ -1,7 +1,10 @@
 #pragma once
-#define SIZE 256
+
 #include <string>
 #include <array>
+
+#define SIZE 256
+
 typedef union bit2char {
 	char symb;
 	struct bit {

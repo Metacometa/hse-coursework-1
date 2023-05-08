@@ -91,16 +91,20 @@
     <QtMoc Include="QtArchiver.h" />
     <ClCompile Include="Compression.cpp" />
     <ClCompile Include="CompressionDialog.cpp" />
+    <ClCompile Include="Huffman.cpp" />
     <ClCompile Include="List.cpp" />
+    <ClCompile Include="Lzw.cpp" />
     <ClCompile Include="QtArchiver.cpp" />
     <ClCompile Include="main.cpp" />
     <None Include="QtArchiver.ico" />
     <ResourceCompile Include="QtArchiver.rc" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="Compression.h" />
+    <QtMoc Include="Lzw.h" />
     <QtMoc Include="CompressionDialog.h" />
+    <QtMoc Include="Compression.h" />
     <ClInclude Include="Config.h" />
+    <QtMoc Include="Huffman.h" />
     <ClInclude Include="List.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

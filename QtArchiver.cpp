@@ -1,10 +1,4 @@
-#pragma once
-
 #include "QtArchiver.h"
-
-#include <QFileDialog.h>
-#include <QMessageBox.h>
-#include "CompressionDialog.h"
 
 //Constructors / Destructors
 QtArchiver::QtArchiver(QWidget* parent)
@@ -22,16 +16,21 @@ ALGORITHM QtArchiver::defineMode()
     {
         return ALGORITHM::HUFFMAN;
     }
+    else if (this->ui.compressionAlgorithms->currentText() == "LZW")
+    {
+        return ALGORITHM::LZW;
+    }
     return ALGORITHM();
 }
 
-std::wstring QtArchiver::getAppropriateExtension(ALGORITHM algorithm)
+std::wstring QtArchiver::getExtension(const ALGORITHM &algorithm)
 {
     switch (algorithm)
     {
     case HUFFMAN:
         return huffmanExtension;
-        break;
+    case LZW:
+        return lzwExtension;
     default:
         return L"";
     }
@@ -125,7 +124,7 @@ void QtArchiver::on_decompressButton_clicked()
         For example, Huffman can decompress only '.huffman' files
     */
     ALGORITHM algorithm = defineMode();
-    std::wstring appropriateExtension = getAppropriateExtension(algorithm);
+    std::wstring appropriateExtension = getExtension(algorithm);
 
     if (isFileAndPathCorrect()) //If path and file chosen successfully 
     {
