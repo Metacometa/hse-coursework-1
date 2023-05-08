@@ -1,8 +1,14 @@
 #pragma once
 
-#include <QtWidgets/QWidget>
 #include "ui_QtArchiver.h"
+#include <QtWidgets/QWidget>
 #include <QFileDialog>
+#include <QMessageBox>
+
+#include <iostream>
+
+#include "CompressionDialog.h"
+
 
 class QtArchiver : public QWidget
 {
@@ -23,7 +29,7 @@ private:
     enum ALGORITHM defineMode();
     bool isFileAndPathCorrect();
     QString getInputFileExtension();
-    std::wstring getAppropriateExtension(ALGORITHM algorithm);
+    std::wstring getExtension(const ALGORITHM& algorithm);
     void loadPath(QWidget* parent, QLineEdit* line, QFileDialog::FileMode mode);
 
 private slots:

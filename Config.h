@@ -19,3 +19,9 @@ const QString decompressionDoneMessage = "File is succesfully decompressed!\nTot
 
 const QString pauseButtonUnpausedText = "Pause";
 const QString pauseButtonPausedText = "Unpause";
+
+const QString huffmanTitle = "Huffman";
+const QString lzwTitle = "Lzw";
+
+const QString compressionTitle = "compression";
+const QString decompressionTitle = "decompression";

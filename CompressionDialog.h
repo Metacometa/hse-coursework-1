@@ -1,14 +1,21 @@
 #pragma once
 
-#include <QDialog>
 #include "ui_CompressionDialog.h"
-#include <string>
+#include <QDialog>
+#include <QMessageBox>
 #include <QString>
 #include <QTimer>
+#include <QThread>
+
+#include <string>
+#include <iostream>
 
 #include "Compression.h"
+#include "Config.h"
+#include "Huffman.h"
+#include "LZW.h"
 
-enum MODES { COMPRESS, DECOMPRESS };
+enum MODE { COMPRESS, DECOMPRESS };
 enum ALGORITHM { HUFFMAN, LZW };
 
 class CompressionDialog : public QDialog 
@@ -17,35 +24,30 @@ class CompressionDialog : public QDialog
 
 public:
 	//Constructor / Destructor
-	CompressionDialog(MODES mode, QString inputFile, QString outputPath, ALGORITHM inputAlgorithm, 
+	CompressionDialog(const MODE& mode, const QString &inputPath, const QString &outputPath, const ALGORITHM &algorithm,
 		QWidget *parent = nullptr);
 	~CompressionDialog();
 
 private:
 	//Resources
 	Ui::CompressionDialogClass ui;
-	Compressor *compressor;
+	Compression *compression;
 
 	//Variables
-	QString inputFile;
-	QString outputPath;
 	QTimer* timer;
 	QTimer* progressBarUpdatingTimer;
 	short time;
 
-	MODES mode;
-	ALGORITHM algorithm;
+	const QString* closeMessage;
 
 	//Util functions void set
-	void initCompressionProperties(MODES mode, ALGORITHM inputAlgorithm);
-	void initPaths(QString inputFile, QString outputPath);
 	void initTimers();
-	void setCorrespondingWindowTitle();
-	void setPathLabel(); 
+	void changeWindowTitle(const MODE& mode, const ALGORITHM& algorithm);
+	void setPathLabel(const QString &inputPath); 
 	void setTimerConnections();
-	void setAlgorithmConnection(QThread* thread);
+	void setAlgorithmConnection(QThread* thread, const MODE& mode);
 	void setFinishedConnections(QThread* thread);
-	void createCompressorThread();
+	void createCompressionThread(const MODE& mode);
 
 signals:
 	void pauseIsClicked();

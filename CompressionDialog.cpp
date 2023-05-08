@@ -1,37 +1,36 @@
 #include "CompressionDialog.h"
-#include <QMessageBox>
-#include <QThread>
-#include <QTimer>
-#include <iostream>
 
 //Constructors / Destructors
-CompressionDialog::CompressionDialog(MODES mode, QString inputFile, QString outputPath,
-	ALGORITHM inputAlgorithm, QWidget* parent) : QDialog(parent) 
+CompressionDialog::CompressionDialog(const MODE &mode, const QString& inputPath, const QString& outputPath,
+	const ALGORITHM &algorithm, QWidget* parent) : QDialog(parent) 
 {
+	switch (algorithm) {
+		case HUFFMAN:
+			this->compression = new Huffman(inputPath.toStdWString(), outputPath.toStdWString());
+			break;
+		case LZW:
+			this->compression = new Lzw(inputPath.toStdWString(), outputPath.toStdWString());
+			break;
+	}
+
+	if (mode == COMPRESS) {
+		closeMessage = &compressionDoneMessage;
+	}
+	else if (mode == DECOMPRESS) {
+		closeMessage = &decompressionDoneMessage;
+	}
+
 	this->ui.setupUi(this);
-	initCompressionProperties(mode, inputAlgorithm);
-	initPaths(inputFile, outputPath);
+
+	changeWindowTitle(mode, algorithm);
 	initTimers();
-	setPathLabel();
-	createCompressorThread();
+	setPathLabel(inputPath);
+	createCompressionThread(mode);
+
 	this->time = 0;
 }
 
 CompressionDialog::~CompressionDialog() {}
-
-//Util functions void set
-void CompressionDialog::initCompressionProperties(MODES mode, ALGORITHM inputAlgorithm)
-{
-	this->mode = MODES(mode);
-	this->algorithm = ALGORITHM(inputAlgorithm);
-	setCorrespondingWindowTitle();
-}
-
-void CompressionDialog::initPaths(QString inputFile, QString outputPath)
-{
-	this->inputFile = inputFile;
-	this->outputPath = outputPath;
-}
 
 void CompressionDialog::initTimers()
 {
@@ -42,39 +41,39 @@ void CompressionDialog::initTimers()
 	this->progressBarUpdatingTimer->setInterval(160);
 }
 
-void CompressionDialog::setCorrespondingWindowTitle()
+void CompressionDialog::changeWindowTitle(const MODE&mode, const ALGORITHM&algorithm)
 {
-	switch (this->algorithm)
+	switch (algorithm)
 	{
 	case HUFFMAN:
-		if (this->mode == COMPRESS)
+		if (mode == COMPRESS)
 		{
-			this->setWindowTitle("Huffman compression");
+			this->setWindowTitle(huffmanTitle + " " + compressionTitle);
 		}
 		else
 		{
-			this->setWindowTitle("Huffman decompression");
+			this->setWindowTitle(huffmanTitle + " " + decompressionTitle);
 		}
 		break;
 	case LZW:
-		if (this->mode == COMPRESS)
+		if (mode == COMPRESS)
 		{
-			this->setWindowTitle("LZW compression");
+			this->setWindowTitle(lzwTitle + " " + compressionTitle);
 		}
 		else
 		{
-			this->setWindowTitle("LZW decompression");
+			this->setWindowTitle(lzwTitle + " " + decompressionTitle);
 		}
 	}
 
 }
 
-void CompressionDialog::setPathLabel()
+void CompressionDialog::setPathLabel(const QString &inputPath)
 {
-	int temp = this->inputFile.length();
-	if (this->inputFile.length() <= 2 * HALF_LENGHT_FILE_PATH_LABEL)
+	int temp = inputPath.length();
+	if (inputPath.length() <= 2 * HALF_LENGHT_FILE_PATH_LABEL)
 	{
-		this->ui.filePathLabel->setText(this->inputFile);
+		this->ui.filePathLabel->setText(inputPath);
 	}
 	else
 	{
@@ -82,8 +81,8 @@ void CompressionDialog::setPathLabel()
 		QString left = "", right = "";
 		for (int i = 0; i < HALF_LENGHT_FILE_PATH_LABEL; ++i)
 		{
-			left = left + this->inputFile[i];
-			right = this->inputFile[this->inputFile.length() - 1 - i] + right;
+			left = left + inputPath[i];
+			right = inputPath[inputPath.length() - 1 - i] + right;
 		}
 		newValueOfLabel = left + newValueOfLabel + right;
 		this->ui.filePathLabel->setText(newValueOfLabel);
@@ -93,60 +92,45 @@ void CompressionDialog::setPathLabel()
 void CompressionDialog::setTimerConnections()
 {
 	connect(this->timer, SIGNAL(timeout()), this, SLOT(timer_timeOut_event_slot()));
-	connect(this->compressor, SIGNAL(finished()), this->timer, SLOT(stop()));
+	connect(this->compression, SIGNAL(finished()), this->timer, SLOT(stop()));
 }
 
-void CompressionDialog::setAlgorithmConnection(QThread* thread)
+void CompressionDialog::setAlgorithmConnection(QThread* thread, const MODE& mode)
 {
-
-	switch (this->algorithm)
+	if (mode == COMPRESS)
 	{
-	case HUFFMAN:
-		if (this->mode == COMPRESS)
-		{
-			connect(thread, SIGNAL(started()), this->compressor, SLOT(huffmanCompression()));
-		}
-		else
-		{
-			connect(thread, SIGNAL(started()), this->compressor, SLOT(huffmanDecompression()));
-		}
-		break;
-	case LZW:
-		if (this->mode == COMPRESS)
-		{
-			connect(thread, SIGNAL(started()), this->compressor, SLOT(lzwCompression()));
-		}
-		else
-		{
-			connect(thread, SIGNAL(started()), this->compressor, SLOT(lzwDecompression()));
-		}
+		connect(thread, SIGNAL(started()), this->compression, SLOT(encodeSlot()));
+	}
+	else
+	{
+		connect(thread, SIGNAL(started()), this->compression, SLOT(decodeSlot()));
 	}
 }
 
 void CompressionDialog::setFinishedConnections(QThread* thread)
 {
-	connect(this->compressor, SIGNAL(finished()), thread, SLOT(quit()));
-	connect(this->compressor, SIGNAL(finished()), this->compressor, SLOT(deleteLater()));
+	connect(this->compression, SIGNAL(finished()), thread, SLOT(quit()));
+	connect(this->compression, SIGNAL(finished()), this->compression, SLOT(deleteLater()));
 	connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-	connect(this->compressor, SIGNAL(finished()), this, SLOT(closeWindow()));
+	connect(this->compression, SIGNAL(finished()), this, SLOT(closeWindow()));
 }
 
-void CompressionDialog::createCompressorThread()
+void CompressionDialog::createCompressionThread(const MODE& mode)
 {
-	QThread* compressorThread = new QThread();
-	this->compressor = new Compressor(this->inputFile.toStdWString(), this->outputPath.toStdWString());
-	this->compressor->moveToThread(compressorThread);
+	QThread* compressionThread = new QThread();
+
+	this->compression->moveToThread(compressionThread);
 	setTimerConnections();
-	setAlgorithmConnection(compressorThread);
-	setFinishedConnections(compressorThread);
-	connect(this->compressor, SIGNAL(updateProgressBar(int)), this->ui.progressBar, SLOT(setValue(int)));
-	connect(this, SIGNAL(pauseIsClicked()), this->compressor, SLOT(reverseIsPaused()), Qt::DirectConnection);
-	connect(this->progressBarUpdatingTimer, SIGNAL(timeout()), this->compressor, SLOT(reverseCanBeUpdated()), Qt::DirectConnection);
+	setAlgorithmConnection(compressionThread, mode);
+	setFinishedConnections(compressionThread);
+	connect(this->compression, SIGNAL(updateProgressBar(int)), this->ui.progressBar, SLOT(setValue(int)));
+	connect(this, SIGNAL(pauseIsClicked()), this->compression, SLOT(reverseIsPaused()), Qt::DirectConnection);
+	connect(this->progressBarUpdatingTimer, SIGNAL(timeout()), this->compression, SLOT(reverseCanBeUpdated()), Qt::DirectConnection);
 	
 	this->timer->start();
 	this->progressBarUpdatingTimer->start();
 
-	compressorThread->start();
+	compressionThread->start();
 }
 
 //private slots
@@ -207,13 +191,6 @@ void CompressionDialog::timer_timeOut_event_slot()
 
 void CompressionDialog::closeWindow()
 {
-	if (this->mode == COMPRESS) 
-	{
-		QMessageBox::information(this, informationTitle, compressionDoneMessage + ui.timerLabel->text());
-	} 
-	else
-	{
-		QMessageBox::information(this, informationTitle, decompressionDoneMessage + ui.timerLabel->text());
-	}
+	QMessageBox::information(this, informationTitle, *closeMessage + ui.timerLabel->text());
 	this->close();
 }

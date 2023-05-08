@@ -49,10 +49,16 @@
     <ClCompile Include="List.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CompressionDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Compression.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CompressionDialog.cpp">
+    <ClCompile Include="Lzw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Huffman.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -69,6 +75,12 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="Compression.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Lzw.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Huffman.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
