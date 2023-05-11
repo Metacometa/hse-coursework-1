@@ -14,23 +14,21 @@ void Lzw::encode(const std::wstring& sourcePath, const std::wstring& destination
 	std::ifstream fileForReading(sourcePath, std::ios::binary);
 	std::ofstream fileForWritting(destinationPath + L"\\" + parseFileName(sourcePath) + L".lzw", std::ios::binary);
 
-
 	fileForWritting.put('*');
 	fileForWritting.put('.');
 	for (auto& i : parseExtension(sourcePath))
 	{
-		fileForWritting.put(i);
+		fileForWritting.put(i);		
 	}
 	fileForWritting.put('*');
-
 
 	ustring bytes;
 	readFileToString(fileForReading, bytes);
 
-	ustring p, c;
+	ustring subsequence, nextSymbol;
 	std::vector<int> inputNumbers;
 
-	p += bytes[0];
+	subsequence += bytes[0];
 
 	for (size_t i = 0; i < bytes.length(); ++i)
 	{
@@ -45,16 +43,16 @@ void Lzw::encode(const std::wstring& sourcePath, const std::wstring& destination
 
 		if (i != bytes.length() - 1)
 		{
-			c += bytes[i + 1];
+			nextSymbol += bytes[i + 1];
 		}
 
-		if (table.find(p + c) != table.end())
+		if (table.find(subsequence + nextSymbol) != table.end())
 		{
-			p = p + c;
+			subsequence = subsequence + nextSymbol;
 		}
 		else
 		{
-			inputNumbers.emplace_back(table[p]);
+			inputNumbers.emplace_back(table[subsequence]);
 
 			if (inputNumbers.size() == 2)
 			{
@@ -64,14 +62,15 @@ void Lzw::encode(const std::wstring& sourcePath, const std::wstring& destination
 
 			if (table.size() < 4096)
 			{
-				table[p + c] = table.size();
+				table[subsequence + nextSymbol] = table.size();
 			}
 
-			p = c;
+			subsequence = nextSymbol;
 		}
-		c = reinterpret_cast<const unsigned char*>("");
+		nextSymbol = reinterpret_cast<const unsigned char*>("");
 	}
-	inputNumbers.emplace_back(table[p]);
+
+	inputNumbers.emplace_back(table[subsequence]);
 	if (inputNumbers.size() == 2)
 	{
 		writeNumbers(fileForWritting, inputNumbers[0], inputNumbers[1]);
@@ -112,6 +111,18 @@ void Lzw::decode(const std::wstring& sourcePath, const std::wstring& destination
 			extension += i;
 		}
 	}
+
+	//this construction is trash and shoul be replaced by something adequate
+	if (extension.size() == 0) {
+		fileForReading.close();
+		return;
+	}
+	else if (extension[0] != L'.') {
+		fileForReading.close();
+		return;
+	}
+
+	std::wcout << L"Extension: " << extension << std::endl;
 
 	std::ofstream fileForWritting(destinationPath + L"\\" + parseFileName(sourcePath) + extension, std::ios::binary);
 

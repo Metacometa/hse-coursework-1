@@ -145,4 +145,5 @@ void QtArchiver::on_decompressButton_clicked()
                 this->ui.compressionAlgorithms->currentText() + " algorithm.");
         }
     }
+
 }
