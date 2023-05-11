@@ -112,7 +112,7 @@ void Lzw::decode(const std::wstring& sourcePath, const std::wstring& destination
 		}
 	}
 
-	//this construction is trash and shoul be replaced by something adequate
+	//this construction is trash and shoud be replaced by something adequate
 	if (extension.size() == 0) {
 		fileForReading.close();
 		return;
@@ -212,11 +212,7 @@ void Lzw::decoding(std::ofstream& file, const std::vector<int>& codes)
 		file << j;
 	}
 
-	//int count = 256;
 	for (size_t i = 0; i < codes.size() - 1; i++) {
-		if (i % 100000 == 0) {
-			std::cout << i << std::endl;
-		}
 
 		//QThread pausing
 		while (this->isPaused) {}
