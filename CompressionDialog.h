@@ -14,9 +14,10 @@
 #include "Config.h"
 #include "Huffman.h"
 #include "LZW.h"
+#include "Arithmetic.h"
 
-enum MODE { COMPRESS, DECOMPRESS };
-enum ALGORITHM { HUFFMAN, LZW };
+enum MODE { COMPRESS, DECOMPRESS};
+enum ALGORITHM { HUFFMAN, LZW, ARITHMETIC };
 
 class CompressionDialog : public QDialog 
 {

@@ -11,6 +11,9 @@ CompressionDialog::CompressionDialog(const MODE &mode, const QString& inputPath,
 		case LZW:
 			this->compression = new Lzw(inputPath.toStdWString(), outputPath.toStdWString());
 			break;
+		case ARITHMETIC:
+			this->compression = new Arithmetic(inputPath.toStdWString(), outputPath.toStdWString());
+			break;
 	}
 
 	if (mode == COMPRESS) {

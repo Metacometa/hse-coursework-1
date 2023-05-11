@@ -20,6 +20,9 @@ ALGORITHM QtArchiver::defineMode()
     {
         return ALGORITHM::LZW;
     }
+    else if (this->ui.compressionAlgorithms->currentText() == "Arithmetic") {
+        return ALGORITHM::ARITHMETIC;
+    }
     return ALGORITHM();
 }
 
@@ -31,6 +34,8 @@ std::wstring QtArchiver::getExtension(const ALGORITHM &algorithm)
         return huffmanExtension;
     case LZW:
         return lzwExtension;
+    case ARITHMETIC:
+        return arithmeticExtension;
     default:
         return L"";
     }
@@ -66,7 +71,6 @@ bool QtArchiver::isFileAndPathCorrect()
     }
     testOfEmptiness.close();
     return isEmpty;
-
 }
 
 QString QtArchiver::getInputFileExtension()

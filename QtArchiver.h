@@ -27,9 +27,12 @@ private:
 
     //Utils
     enum ALGORITHM defineMode();
-    bool isFileAndPathCorrect();
-    QString getInputFileExtension();
     std::wstring getExtension(const ALGORITHM& algorithm);
+
+    bool isFileAndPathCorrect();
+
+    QString getInputFileExtension();
+
     void loadPath(QWidget* parent, QLineEdit* line, QFileDialog::FileMode mode);
 
 private slots:

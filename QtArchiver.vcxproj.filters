@@ -61,6 +61,9 @@
     <ClCompile Include="Huffman.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Arithmetic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="List.h">
@@ -81,6 +84,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="Huffman.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Arithmetic.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
