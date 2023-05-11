@@ -1,6 +1,7 @@
 #pragma once
 #include "Compression.h"
 
+#include <iostream>
 #include <fstream>
 #include <unordered_map>
 #include <vector>

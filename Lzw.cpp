@@ -113,7 +113,7 @@ void Lzw::decode(const std::wstring& sourcePath, const std::wstring& destination
 		}
 	}
 
-	std::ofstream fileForWritting(destinationPath + L"\\" + parseFileName(sourcePath) + L".txt", std::ios::binary);
+	std::ofstream fileForWritting(destinationPath + L"\\" + parseFileName(sourcePath) + extension, std::ios::binary);
 
 	std::vector<int> codes;
 	std::vector<unsigned char> bytes;
