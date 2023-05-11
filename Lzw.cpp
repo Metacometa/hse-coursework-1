@@ -122,8 +122,6 @@ void Lzw::decode(const std::wstring& sourcePath, const std::wstring& destination
 		return;
 	}
 
-	std::wcout << L"Extension: " << extension << std::endl;
-
 	std::ofstream fileForWritting(destinationPath + L"\\" + parseFileName(sourcePath) + extension, std::ios::binary);
 
 	std::vector<int> codes;
