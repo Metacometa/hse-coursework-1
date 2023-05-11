@@ -129,7 +129,7 @@ void Lzw::decode(const std::wstring& sourcePath, const std::wstring& destination
 	std::vector<int> codes;
 	std::vector<unsigned char> bytes;
 
-	for (int i = fileBeginning; i < source.length(); ++i)
+	for (size_t i = fileBeginning; i < source.length(); ++i)
 	{
 		bytes.push_back(source[i]);
 
@@ -215,13 +215,17 @@ void Lzw::decoding(std::ofstream& file, const std::vector<int>& codes)
 	}
 
 	//int count = 256;
-	for (int i = 0; i < codes.size() - 1; i++) {
+	for (size_t i = 0; i < codes.size() - 1; i++) {
+		if (i % 100000 == 0) {
+			std::cout << i << std::endl;
+		}
+
 		//QThread pausing
 		while (this->isPaused) {}
 
 		//updating QtProgressBar
 		if (canBeUpdated) {
-			emit updateProgressBar(i * 100 / codes.size());
+			emit updateProgressBar(i * 100 / (codes.size()-1));
 			canBeUpdated = false;
 		}
 
