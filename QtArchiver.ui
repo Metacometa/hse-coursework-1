@@ -144,6 +144,11 @@
            <string>LZW</string>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>Arithmetic</string>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>

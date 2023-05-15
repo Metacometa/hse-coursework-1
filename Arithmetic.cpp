@@ -5,8 +5,12 @@ Arithmetic::Arithmetic(const std::wstring& inputPath_, const std::wstring& outpu
 
 void Arithmetic::encode(const std::wstring& sourcePath, const std::wstring& destinationPath)
 {
+	emit updateProgressBar(100);
+	emit finished();
 }
 
 void Arithmetic::decode(const std::wstring& sourcePath, const std::wstring& destinationPath)
 {
+	emit updateProgressBar(100);
+	emit finished();
 }

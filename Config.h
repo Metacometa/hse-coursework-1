@@ -23,6 +23,7 @@ const QString pauseButtonPausedText = "Unpause";
 
 const QString huffmanTitle = "Huffman";
 const QString lzwTitle = "Lzw";
+const QString arithmeticTitle = "Arithmetic";
 
 const QString compressionTitle = "compression";
 const QString decompressionTitle = "decompression";

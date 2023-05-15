@@ -36,7 +36,8 @@ void Lzw::encode(const std::wstring& sourcePath, const std::wstring& destination
 		while (this->isPaused) {}
 
 		//updating QtProgressBar
-		if (canBeUpdated) {
+		if (canBeUpdated) 
+		{
 			emit updateProgressBar(i * 100 / bytes.length());
 			canBeUpdated = false;
 		}
@@ -113,11 +114,13 @@ void Lzw::decode(const std::wstring& sourcePath, const std::wstring& destination
 	}
 
 	//this construction is trash and shoud be replaced by something adequate
-	if (extension.size() == 0) {
+	if (extension.size() == 0) 
+	{
 		fileForReading.close();
 		return;
 	}
-	else if (extension[0] != L'.') {
+	else if (extension[0] != L'.') 
+	{
 		fileForReading.close();
 		return;
 	}
@@ -174,7 +177,8 @@ void Lzw::writeNumbers(std::ofstream& file, const int& one, const int& two)
 
 void Lzw::getCodesFromBytes(std::vector<int>& codes, const std::vector<unsigned char>& bytes)
 {
-	if (bytes.size() < 2 or bytes.size() > 3) {
+	if (bytes.size() < 2 or bytes.size() > 3)
+	{
 		return;
 	}
 	int code = bytes[0];
@@ -182,7 +186,8 @@ void Lzw::getCodesFromBytes(std::vector<int>& codes, const std::vector<unsigned 
 	code = code | (static_cast<unsigned char>(bytes[1] >> 4));
 	codes.emplace_back(code);
 
-	if (bytes.size() == 3) {
+	if (bytes.size() == 3)
+	{
 		code = 0;
 		code = code | static_cast<unsigned char>(bytes[1] << 4);
 		code = code << 4;
@@ -194,52 +199,60 @@ void Lzw::getCodesFromBytes(std::vector<int>& codes, const std::vector<unsigned 
 void Lzw::decoding(std::ofstream& file, const std::vector<int>& codes)
 {
 	std::unordered_map<int, ustring> table;
-	for (int i = 0; i <= 255; i++) {
+	for (int i = 0; i <= 255; i++) 
+	{
 		ustring ch;
 		ch += static_cast<unsigned char>(i);
 		table[i] = ch;
 	}
 	int oldCode = codes[0];
-	int n;
+	int code;
 
-	ustring s;
-	s += table[oldCode];
+	ustring subsequenceFromTable;
+	subsequenceFromTable += table[oldCode];
 
-	ustring c;
-	c += s[0];
+	ustring nextSymbol;
+	nextSymbol += subsequenceFromTable[0];
 
-	for (auto& j : s) {
+	for (auto& j : subsequenceFromTable)
+	{
 		file << j;
 	}
 
-	for (size_t i = 0; i < codes.size() - 1; i++) {
+	for (size_t i = 0; i < codes.size() - 1; i++) 
+	{
 
 		//QThread pausing
 		while (this->isPaused) {}
 
 		//updating QtProgressBar
-		if (canBeUpdated) {
+		if (canBeUpdated) 
+		{
 			emit updateProgressBar(i * 100 / (codes.size()-1));
 			canBeUpdated = false;
 		}
 
-		n = codes[long(i + 1)];
-		if (table.find(n) == table.end()) {
-			s = table[oldCode];
-			s = s + c;
+		code = codes[long(i + 1)];
+		if (table.find(code) == table.end()) 
+		{
+			subsequenceFromTable = table[oldCode];
+			subsequenceFromTable = subsequenceFromTable + nextSymbol;
 		}
-		else {
-			s = table[n];
+		else 
+		{
+			subsequenceFromTable = table[code];
 		}
-		for (auto& j : s) {
+
+		for (auto& j : subsequenceFromTable)
+		{
 			file << j;
 		}
 
-		c = reinterpret_cast<const unsigned char*>("");
-		c += s[0];
-		table[table.size()] = table[oldCode] + c;
-		//count++;
-		oldCode = n;
+		nextSymbol = reinterpret_cast<const unsigned char*>("");
+		nextSymbol += subsequenceFromTable[0];
+
+		table[table.size()] = table[oldCode] + nextSymbol;
+		oldCode = code;
 	}
 }
 
@@ -247,7 +260,8 @@ std::wstring Lzw::parseExtension(const std::wstring& filePath)
 {
 	std::wstring extension;
 
-	for (int i = filePath.size() - 1; i >= 0 and filePath[i] != '.'; --i) {
+	for (int i = filePath.size() - 1; i >= 0 and filePath[i] != '.'; --i)
+	{
 		extension = filePath[i] + extension;
 	}
 
@@ -259,12 +273,15 @@ std::wstring Lzw::parseFileName(const std::wstring& filePath)
 	std::wstring fileName;
 	bool isFileName = false;
 
-	for (int i = filePath.size() - 1; i >= 0 and filePath[i] != '\\'; --i) {
-		if (isFileName) {
+	for (int i = filePath.size() - 1; i >= 0 and filePath[i] != '\\'; --i) 
+	{
+		if (isFileName)
+		{
 			fileName = filePath[i] + fileName;
 		}
 
-		if (filePath[i] == '.') {
+		if (filePath[i] == '.')
+		{
 			isFileName = true;
 		}
 	}

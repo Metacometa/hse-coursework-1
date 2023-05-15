@@ -4,7 +4,8 @@
 CompressionDialog::CompressionDialog(const MODE &mode, const QString& inputPath, const QString& outputPath,
 	const ALGORITHM &algorithm, QWidget* parent) : QDialog(parent) 
 {
-	switch (algorithm) {
+	switch (algorithm) 
+	{
 		case HUFFMAN:
 			this->compression = new Huffman(inputPath.toStdWString(), outputPath.toStdWString());
 			break;
@@ -44,7 +45,7 @@ void CompressionDialog::initTimers()
 	this->progressBarUpdatingTimer->setInterval(160);
 }
 
-void CompressionDialog::changeWindowTitle(const MODE&mode, const ALGORITHM&algorithm)
+void CompressionDialog::changeWindowTitle(const MODE& mode, const ALGORITHM& algorithm)
 {
 	switch (algorithm)
 	{
@@ -67,8 +68,18 @@ void CompressionDialog::changeWindowTitle(const MODE&mode, const ALGORITHM&algor
 		{
 			this->setWindowTitle(lzwTitle + " " + decompressionTitle);
 		}
+		break;
+	case ARITHMETIC:
+		if (mode == COMPRESS)
+		{
+			this->setWindowTitle(arithmeticTitle + " " + compressionTitle);
+		}
+		else
+		{
+			this->setWindowTitle(arithmeticTitle + " " + decompressionTitle);
+		}
+		break;
 	}
-
 }
 
 void CompressionDialog::setPathLabel(const QString &inputPath)
