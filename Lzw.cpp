@@ -1,5 +1,6 @@
 #include "LZW.h"
 
+
 Lzw::Lzw(const std::wstring& inputPath_, const std::wstring& outputPath_, QObject* parent)
 	: Compression(inputPath_, outputPath_, parent) {}
 
@@ -12,7 +13,7 @@ void Lzw::encode(const std::wstring& sourcePath, const std::wstring& destination
 		table[ch] = i;
 	}
 	std::ifstream fileForReading(sourcePath, std::ios::binary);
-	std::ofstream fileForWritting(destinationPath + L"\\" + parseFileName(sourcePath) + L".lzw", std::ios::binary);
+	std::ofstream fileForWritting(destinationPath + L"\\" + parseFileName(sourcePath) + lzwExtension, std::ios::binary);
 
 	fileForWritting.put('*');
 	fileForWritting.put('.');

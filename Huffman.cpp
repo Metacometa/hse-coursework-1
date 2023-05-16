@@ -23,7 +23,7 @@ void Huffman::encode(const std::wstring& sourcePath, const std::wstring& destina
 	fr.open(this->inputPath, std::ios_base::in | std::ios_base::binary);
 
 	fr.seekg(0, std::ios_base::end);
-	std::streamoff length = fr.tellg();
+	size_t length = fr.tellg();
 	fr.seekg(0, std::ios_base::beg);
 
 	int freq[SIZE] = { 0 };
@@ -73,7 +73,7 @@ void Huffman::encode(const std::wstring& sourcePath, const std::wstring& destina
 	BIT2CHAR buf;
 	buf.symb = 0;
 	int currbit = 0;
-	for (std::streamoff i = 0; i < length; ++i)
+	for (size_t i = 0; i < length; ++i)
 	{
 		//pausing
 		while (this->isPaused) {}
@@ -141,7 +141,7 @@ void Huffman::decode(const std::wstring& sourcePath, const std::wstring& destina
 	coded.open(this->inputPath, std::ios_base::in | std::ios_base::binary);
 
 	coded.seekg(0, std::ios_base::end);
-	std::streamoff length = coded.tellg();
+	size_t length = coded.tellg();
 	coded.seekg(0, std::ios_base::beg);
 
 	int bit = coded.get();
